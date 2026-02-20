@@ -3,6 +3,7 @@ import { validateLoginForm, validateEmail } from '../../utils/validation';
 import { useAuth } from '../../hooks/useAuth';
 import './AuthForms.css';
 
+// Login form with validation
 const LoginForm = ({ onSuccess, onNavigateToRegister, onNavigateToForgotPassword }) => {
   const { login, loading } = useAuth();
 

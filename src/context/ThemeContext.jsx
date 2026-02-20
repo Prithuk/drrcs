@@ -2,11 +2,13 @@ import React, { createContext, useState, useEffect, useCallback } from 'react';
 
 const ThemeContext = createContext();
 
+// Handle light/dark theme switching
 const ThemeProvider = ({ children }) => {
   const [theme, setTheme] = useState('light');
   const [systemPreference, setSystemPreference] = useState('light');
   const [isClient, setIsClient] = useState(false);
 
+  // Load theme preference on mount
   useEffect(() => {
     setIsClient(true);
     
@@ -23,6 +25,7 @@ const ThemeProvider = ({ children }) => {
     }
   }, []);
 
+  // Apply theme class to document
   useEffect(() => {
     if (!isClient) return;
     

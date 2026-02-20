@@ -2,6 +2,7 @@ import React from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import './Sidebar.css';
 
+// Menu items organized by user role
 const MENU_ITEMS = {
   admin: [
     { label: 'Dashboard', icon: '📊', path: '/dashboard' },

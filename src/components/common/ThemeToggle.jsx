@@ -2,6 +2,7 @@ import React from 'react';
 import { useTheme } from '../../hooks/useTheme';
 import './ThemeToggle.css';
 
+// Toggle between light/dark themes
 export const ThemeToggle = () => {
   const { theme, toggleTheme } = useTheme();
 

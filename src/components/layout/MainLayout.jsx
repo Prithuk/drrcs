@@ -3,6 +3,7 @@ import { Navbar } from './Navbar';
 import { Sidebar } from './Sidebar';
 import './MainLayout.css';
 
+// Main app layout with navbar and sidebar
 export const MainLayout = ({ children, currentPath = '/dashboard' }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
