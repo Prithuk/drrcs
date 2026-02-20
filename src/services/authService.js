@@ -41,6 +41,13 @@ const MOCK_USERS = [
     password: 'Password@123',
     role: 'admin',
   },
+  {
+    id: '4',
+    fullName: 'Ashutosh Kumar',
+    email: 'ashutoshkumar@lewisu.edu',
+    password: 'Password@123',
+    role: 'admin',
+  },
 ];
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
