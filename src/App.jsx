@@ -10,6 +10,7 @@ import MainLayout from './components/layout/MainLayout';
 import DashboardPage from './components/dashboard/DashboardPage';
 import './App.css';
 
+// Protect routes - redirect to login if not authenticated
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated, loading } = useAuth();
   if (loading) return null;

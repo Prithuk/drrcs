@@ -11,12 +11,14 @@ export const AuthContext = createContext();
 
 const TOKEN_KEY = 'drrcs_token';
 
+// Manage authentication state across the app
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Check if user has a saved session on mount
   useEffect(() => {
     const storedToken = localStorage.getItem(TOKEN_KEY);
     if (storedToken) {

@@ -1,3 +1,4 @@
+// Mock API calls for demo - replace with real backend later
 const MOCK_DELAY = 1000;
 
 // Browser-compatible base64 encoding/decoding

@@ -3,6 +3,7 @@ import { validateRegistrationForm, validatePassword, validateEmail } from '../..
 import { useAuth } from '../../hooks/useAuth';
 import './AuthForms.css';
 
+// Show password strength with color indicator
 const PasswordStrengthIndicator = ({ strength }) => {
   if (!strength) return null;
 

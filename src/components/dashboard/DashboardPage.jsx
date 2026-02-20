@@ -5,6 +5,7 @@ import Badge from '../common/Badge';
 import StatusIndicator from '../common/StatusIndicator';
 import './DashboardPage.css';
 
+// Dashboard view for admins
 const AdminDashboard = ({ user }) => (
   <>
     <div className="dashboard-welcome">
