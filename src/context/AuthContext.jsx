@@ -11,17 +11,12 @@ export const AuthContext = createContext();
 
 const TOKEN_KEY = 'drrcs_token';
 
-/**
- * Authentication Provider Component
- * Wraps the app and provides auth state and methods to all components
- */
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Restore session from localStorage on first load
   useEffect(() => {
     const storedToken = localStorage.getItem(TOKEN_KEY);
     if (storedToken) {

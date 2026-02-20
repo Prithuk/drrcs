@@ -1,8 +1,3 @@
-/**
- * Main Layout Component
- * Wraps content with navbar and sidebar
- */
-
 import React, { useState } from 'react';
 import { Navbar } from './Navbar';
 import { Sidebar } from './Sidebar';

@@ -1,8 +1,3 @@
-/**
- * Sidebar Navigation Component
- * Side navigation menu with role-based items
- */
-
 import React from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import './Sidebar.css';

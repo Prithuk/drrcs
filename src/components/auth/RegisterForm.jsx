@@ -1,16 +1,8 @@
-/**
- * Registration Form Component
- * Handles user registration with validation and password strength indicator
- */
-
 import React, { useState } from 'react';
 import { validateRegistrationForm, validatePassword, validateEmail } from '../../utils/validation';
 import { useAuth } from '../../hooks/useAuth';
 import './AuthForms.css';
 
-/**
- * Password Strength Indicator Component
- */
 const PasswordStrengthIndicator = ({ strength }) => {
   if (!strength) return null;
 

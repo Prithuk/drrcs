@@ -1,8 +1,3 @@
-/**
- * Dashboard Page Component
- * Main dashboard page with role-specific content
- */
-
 import React from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import Card from '../common/Card';
@@ -10,7 +5,6 @@ import Badge from '../common/Badge';
 import StatusIndicator from '../common/StatusIndicator';
 import './DashboardPage.css';
 
-// Role-specific dashboard components
 const AdminDashboard = ({ user }) => (
   <>
     <div className="dashboard-welcome">

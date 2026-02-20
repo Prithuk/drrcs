@@ -1,8 +1,3 @@
-/**
- * Theme Context
- * Manages light/dark mode state and preferences
- */
-
 import React, { createContext, useState, useEffect, useCallback } from 'react';
 
 const ThemeContext = createContext();
@@ -12,17 +7,14 @@ const ThemeProvider = ({ children }) => {
   const [systemPreference, setSystemPreference] = useState('light');
   const [isClient, setIsClient] = useState(false);
 
-  // Initialize on client side only
   useEffect(() => {
     setIsClient(true);
     
     try {
-      // Detect system preference
       if (window.matchMedia) {
         const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
         setSystemPreference(prefersDark ? 'dark' : 'light');
 
-        // Get saved preference from localStorage
         const savedTheme = localStorage.getItem('app-theme');
         setTheme(savedTheme || (prefersDark ? 'dark' : 'light'));
       }
@@ -31,7 +23,6 @@ const ThemeProvider = ({ children }) => {
     }
   }, []);
 
-  // Apply theme to document
   useEffect(() => {
     if (!isClient) return;
     

@@ -1,8 +1,3 @@
-/**
- * Login Form Component
- * Handles user login with email and password validation
- */
-
 import React, { useState } from 'react';
 import { validateLoginForm, validateEmail } from '../../utils/validation';
 import { useAuth } from '../../hooks/useAuth';
