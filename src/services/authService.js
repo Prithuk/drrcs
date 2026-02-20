@@ -22,24 +22,24 @@ const atob_compat = (str) => {
 const MOCK_USERS = [
   {
     id: '1',
-    fullName: 'Demo Admin',
-    email: 'admin@drrcs.test',
-    password: 'Admin@123456', // Never store plain text in real app!
+    fullName: 'Hlay Aliotte',
+    email: 'hlayaliotte@lewisu.edu',
+    password: 'Password@123', // Never store plain text in real app!
     role: 'admin',
   },
   {
     id: '2',
-    fullName: 'Demo Volunteer',
-    email: 'volunteer@drrcs.test',
-    password: 'Volunteer@123',
-    role: 'volunteer',
+    fullName: 'Prithu Kathet',
+    email: 'prithukathet@lewisu.edu',
+    password: 'Password@123',
+    role: 'admin',
   },
   {
     id: '3',
-    fullName: 'Demo Organization',
-    email: 'org@drrcs.test',
-    password: 'Organization@123',
-    role: 'organization_staff',
+    fullName: 'Sree Soumith Thanigondala',
+    email: 'sreesoumiththanigo@lewisu.edu',
+    password: 'Password@123',
+    role: 'admin',
   },
 ];
 
