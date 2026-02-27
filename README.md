@@ -1,4 +1,4 @@
-# DRRCS Frontend - Week 4: Authentication UI
+# DRRCS Frontend - Authentication UI
 
 Disaster Relief Resource Coordination System - React Frontend Application
 
