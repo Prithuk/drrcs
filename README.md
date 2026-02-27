@@ -4,8 +4,6 @@ Disaster Relief Resource Coordination System - React Frontend Application
 
 ## Contributors
 
-Thank you to the contributors who worked on this frontend:
-
 - Sowjanya Gottimukkala
 - Prithu Kathet
 - Sree Soumith Thanigondala
@@ -18,7 +16,7 @@ This is a React-based frontend for the Disaster Relief Resource Coordination Sys
 
 ## Features (Week 4 Implementation)
 
-### ✅ Completed
+###  Completed
 
 - **Login Page**: Email/password login with validation
 - **Registration Page**: User signup with role selection
