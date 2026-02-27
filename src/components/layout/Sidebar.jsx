@@ -1,4 +1,5 @@
-import React from 'react';
+﻿import React from 'react';
+import { NavLink } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import './Sidebar.css';
 
@@ -8,7 +9,7 @@ const MENU_ITEMS = {
     { label: 'Dashboard', icon: '📊', path: '/dashboard' },
     { label: 'All Requests', icon: '📋', path: '/admin/requests' },
     { label: 'Volunteers', icon: '👥', path: '/admin/volunteers' },
-    { label: 'Users', icon: '👤', path: '/admin/users' },
+    { label: 'Users', icon: '👤', path: '/users' },
     { label: 'Analytics', icon: '📈', path: '/admin/analytics' },
     { label: 'Settings', icon: '⚙️', path: '/admin/settings' },
   ],
@@ -54,14 +55,15 @@ export const Sidebar = ({ isOpen, onClose, currentPath = '/dashboard' }) => {
 
         <nav className="sidebar-nav">
           {menuItems.map((item, index) => (
-            <a
+            <NavLink
               key={index}
-              href={item.path}
-              className={`nav-item ${currentPath === item.path ? 'active' : ''}`}
+              to={item.path}
+              className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
+              onClick={onClose}
             >
               <span className="nav-icon">{item.icon}</span>
               <span className="nav-label">{item.label}</span>
-            </a>
+            </NavLink>
           ))}
         </nav>
 
@@ -77,3 +79,4 @@ export const Sidebar = ({ isOpen, onClose, currentPath = '/dashboard' }) => {
 };
 
 export default Sidebar;
+

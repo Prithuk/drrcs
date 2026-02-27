@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import ThemeToggle from '../common/ThemeToggle';
 import './Navbar.css';
@@ -6,6 +7,7 @@ import './Navbar.css';
 export const Navbar = ({ onMenuToggle }) => {
   const { user, logout } = useAuth();
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const navigate = useNavigate();
 
   const handleLogout = async () => {
     await logout();
@@ -39,7 +41,7 @@ export const Navbar = ({ onMenuToggle }) => {
           
           {/* Notifications */}
           <div className="navbar-action">
-            <button className="notification-bell" aria-label="View notifications">
+            <button className="notification-bell" aria-label="View notifications" onClick={() => navigate('/notifications')}>
               <svg
                 width="20"
                 height="20"
@@ -83,7 +85,7 @@ export const Navbar = ({ onMenuToggle }) => {
 
                 <div className="menu-divider"></div>
 
-                <button className="menu-item">
+                <button className="menu-item" onClick={() => { setShowUserMenu(false); navigate('/profile'); }}>
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                     <circle cx="12" cy="7" r="4"></circle>
@@ -91,7 +93,7 @@ export const Navbar = ({ onMenuToggle }) => {
                   Profile Settings
                 </button>
 
-                <button className="menu-item">
+                <button className="menu-item" onClick={() => { setShowUserMenu(false); navigate(user?.role === 'admin' ? '/admin/settings' : (user?.role === 'organization_staff' ? '/org/settings' : '/volunteer/help')); }}>
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                     <circle cx="12" cy="12" r="1"></circle>
                     <circle cx="19" cy="12" r="1"></circle>
@@ -118,3 +120,5 @@ export const Navbar = ({ onMenuToggle }) => {
     </nav>
   );
 };
+
+export default Navbar;

@@ -48,7 +48,28 @@ const MOCK_USERS = [
     password: 'Password@123',
     role: 'admin',
   },
-];
+  ,
+  {
+    id: '4',
+    fullName: 'Admin Demo',
+    email: 'admin@drrcs.test',
+    password: 'Admin@123456',
+    role: 'admin',
+  },
+  {
+    id: '5',
+    fullName: 'Volunteer Demo',
+    email: 'volunteer@drrcs.test',
+    password: 'Volunteer@123',
+    role: 'volunteer',
+  },
+  {
+    id: '6',
+    fullName: 'Organization Demo',
+    email: 'org@drrcs.test',
+    password: 'Organization@123',
+    role: 'organization_staff',
+  }];
 
 /**
  * Sleep utility for simulating async operations

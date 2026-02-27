@@ -1,219 +1,268 @@
-import React from 'react';
-import { useAuth } from '../../hooks/useAuth';
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { api } from '../../lib/api';
 import Card from '../common/Card';
-import Badge from '../common/Badge';
-import StatusIndicator from '../common/StatusIndicator';
+import { Badge } from '../common/Badge';
+import { TrendingUp, FileText, Clock, AlertCircle, ArrowRight, Flame, Droplets, Wind, CheckCircle } from 'lucide-react';
+import {
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell,
+  BarChart,
+  Bar,
+  LineChart,
+  Line,
+  Legend
+} from 'recharts';
 import './DashboardPage.css';
 
-// Dashboard view for admins
-const AdminDashboard = ({ user }) => (
-  <>
-    <div className="dashboard-welcome">
-      <h1>Welcome, {user?.fullName ?? 'Admin'}!</h1>
-      <p>System Administrator Dashboard</p>
-    </div>
-
-    {/* Stats Cards */}
-    <div className="dashboard-grid">
-      <Card elevation="elevated">
-        <Card.Body>
-          <div className="stat-card">
-            <div className="stat-icon">📋</div>
-            <div className="stat-content">
-              <div className="stat-label">Total Requests</div>
-              <div className="stat-value">24</div>
-              <div className="stat-meta">+3 this week</div>
-            </div>
-          </div>
-        </Card.Body>
-      </Card>
-
-      <Card elevation="elevated">
-        <Card.Body>
-          <div className="stat-card">
-            <div className="stat-icon">👥</div>
-            <div className="stat-content">
-              <div className="stat-label">Active Volunteers</div>
-              <div className="stat-value">156</div>
-              <div className="stat-meta">+8 new</div>
-            </div>
-          </div>
-        </Card.Body>
-      </Card>
-
-      <Card elevation="elevated">
-        <Card.Body>
-          <div className="stat-card">
-            <div className="stat-icon">🏢</div>
-            <div className="stat-content">
-              <div className="stat-label">Organizations</div>
-              <div className="stat-value">12</div>
-              <div className="stat-meta">All active</div>
-            </div>
-          </div>
-        </Card.Body>
-      </Card>
-
-      <Card elevation="elevated">
-        <Card.Body>
-          <div className="stat-card">
-            <div className="stat-icon">⚡</div>
-            <div className="stat-content">
-              <div className="stat-label">System Health</div>
-              <div className="stat-value">99.8%</div>
-              <div className="stat-meta">Healthy</div>
-            </div>
-          </div>
-        </Card.Body>
-      </Card>
-    </div>
-
-    {/* Recent Activity */}
-    <Card elevation="default">
-      <Card.Header>Recent Activity</Card.Header>
-      <Card.Body>
-        <div className="activity-list">
-          {[
-            { icon: '📝', action: 'New request submitted', time: '2 hours ago' },
-            { icon: '👤', action: 'New volunteer registered', time: '4 hours ago' },
-            { icon: '✓', action: 'Request completed', time: '1 day ago' },
-          ].map((item, i) => (
-            <div key={i} className="activity-item">
-              <span className="activity-icon">{item.icon}</span>
-              <div className="activity-content">
-                <div className="activity-action">{item.action}</div>
-                <div className="activity-time">{item.time}</div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </Card.Body>
-    </Card>
-  </>
-);
-
-const VolunteerDashboard = ({ user }) => (
-  <>
-    <div className="dashboard-welcome">
-      <h1>Welcome, {user?.fullName ?? 'Volunteer'}!</h1>
-      <p>Volunteer Dashboard</p>
-    </div>
-
-    {/* Stats */}
-    <div className="dashboard-grid">
-      <Card elevation="elevated">
-        <Card.Body>
-          <div className="stat-card">
-            <div className="stat-icon">✓</div>
-            <div className="stat-content">
-              <div className="stat-label">Tasks Completed</div>
-              <div className="stat-value">12</div>
-              <div className="stat-meta">This month</div>
-            </div>
-          </div>
-        </Card.Body>
-      </Card>
-
-      <Card elevation="elevated">
-        <Card.Body>
-          <div className="stat-card">
-            <div className="stat-icon">📋</div>
-            <div className="stat-content">
-              <div className="stat-label">Available Tasks</div>
-              <div className="stat-value">7</div>
-              <div className="stat-meta">Ready for you</div>
-            </div>
-          </div>
-        </Card.Body>
-      </Card>
-    </div>
-
-    {/* Status */}
-    <Card elevation="default">
-      <Card.Header>Your Status</Card.Header>
-      <Card.Body>
-        <div style={{ marginBottom: '16px' }}>
-          <div style={{ marginBottom: '8px', fontSize: '14px', fontWeight: '500' }}>
-            Availability
-          </div>
-          <StatusIndicator status="available" label="Available" />
-        </div>
-      </Card.Body>
-    </Card>
-  </>
-);
-
-const OrganizationDashboard = ({ user }) => (
-  <>
-    <div className="dashboard-welcome">
-      <h1>Welcome, {user?.fullName ?? 'Staff'}!</h1>
-      <p>Organization Dashboard</p>
-    </div>
-
-    {/* Stats */}
-    <div className="dashboard-grid">
-      <Card elevation="elevated">
-        <Card.Body>
-          <div className="stat-card">
-            <div className="stat-icon">📋</div>
-            <div className="stat-content">
-              <div className="stat-label">My Requests</div>
-              <div className="stat-value">5</div>
-              <div className="stat-meta">2 pending</div>
-            </div>
-          </div>
-        </Card.Body>
-      </Card>
-
-      <Card elevation="elevated">
-        <Card.Body>
-          <div className="stat-card">
-            <div className="stat-icon">👥</div>
-            <div className="stat-content">
-              <div className="stat-label">Team Members</div>
-              <div className="stat-value">8</div>
-              <div className="stat-meta">All active</div>
-            </div>
-          </div>
-        </Card.Body>
-      </Card>
-    </div>
-
-    {/* Quick Actions */}
-    <Card elevation="default">
-      <Card.Header>Quick Actions</Card.Header>
-      <Card.Body>
-        <div className="quick-actions">
-          <button className="action-button">
-            <span>➕</span> Submit New Request
-          </button>
-          <button className="action-button">
-            <span>📋</span> View My Requests
-          </button>
-        </div>
-      </Card.Body>
-    </Card>
-  </>
-);
-
-// Main Dashboard Page
 export const DashboardPage = () => {
-  const { user } = useAuth();
+  const [stats, setStats] = useState(null);
+  const [recentRequests, setRecentRequests] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [requests, setRequests] = useState([]);
 
-  const renderDashboard = () => {
-    switch (user?.role) {
-      case 'admin':
-        return <AdminDashboard user={user} />;
-      case 'volunteer':
-        return <VolunteerDashboard user={user} />;
-      case 'organization_staff':
-        return <OrganizationDashboard user={user} />;
-      default:
-        return <VolunteerDashboard user={user} />;
+  useEffect(() => {
+    loadData();
+  }, []);
+
+  const loadData = async () => {
+    try {
+      const [statsData, requestsData] = await Promise.all([
+        api.getDashboardStats(),
+        api.getRequests(),
+      ]);
+      setStats(statsData);
+      setRequests(requestsData);
+      setRecentRequests(requestsData.slice(0, 5));
+    } catch (error) {
+      console.error('Failed to load dashboard data:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  return <div className="dashboard-page">{renderDashboard()}</div>;
+  const getPriorityColor = (priority) => {
+    switch (priority) {
+      case 'critical': return 'bg-red-100 text-red-800';
+      case 'high': return 'bg-orange-100 text-orange-800';
+      case 'medium': return 'bg-yellow-100 text-yellow-800';
+      case 'low': return 'bg-green-100 text-green-800';
+      default: return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  const getStatusColor = (status) => {
+    switch (status) {
+      case 'pending': return 'bg-yellow-100 text-yellow-800';
+      case 'assigned': return 'bg-blue-100 text-blue-800';
+      case 'in-progress': return 'bg-purple-100 text-purple-800';
+      case 'completed': return 'bg-green-100 text-green-800';
+      default: return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  const getDisasterIcon = (type) => {
+    switch (type) {
+      case 'flood': return <Droplets className="icon" />;
+      case 'wildfire': return <Flame className="icon" />;
+      case 'hurricane':
+      case 'tornado': return <Wind className="icon" />;
+      default: return <AlertCircle className="icon" />;
+    }
+  };
+
+  // Mock chart data when requests are available
+  const requestTrendData = requests.length ? [
+    { time: '00:00', requests: 2 },
+    { time: '04:00', requests: 1 },
+    { time: '08:00', requests: 5 },
+    { time: '12:00', requests: 3 },
+    { time: '16:00', requests: 2 },
+    { time: '20:00', requests: 4 },
+  ] : [];
+
+  const categoryData = requests.length ? (
+    // group by category
+    Object.entries(requests.reduce((acc, r) => {
+      acc[r.category] = (acc[r.category] || 0) + 1;
+      return acc;
+    }, {})).map(([name, value], i) => ({ name, value, color: ['#ef4444','#f59e0b','#3b82f6','#10b981','#8b5cf6','#6b7280'][i % 6] }))
+  ) : [];
+
+  if (isLoading) {
+    return (
+      <div className="loading-placeholder">
+        <div className="spinner" />
+        <p>Loading dashboard...</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="dashboard-page">
+      <div className="dashboard-welcome">
+        <h1>Dashboard Overview</h1>
+        <p>Real-time emergency request monitoring</p>
+      </div>
+
+      {/* Stats Cards */}
+      <div className="dashboard-grid">
+        <Card elevation="elevated">
+          <Card.Body>
+            <div className="stat-card">
+              <div className="stat-icon"><FileText /></div>
+              <div className="stat-content">
+                <div className="stat-label">Total Requests</div>
+                <div className="stat-value">{stats?.totalRequests ?? 0}</div>
+                <div className="stat-meta">All time</div>
+              </div>
+            </div>
+          </Card.Body>
+        </Card>
+
+        <Card elevation="elevated">
+          <Card.Body>
+            <div className="stat-card">
+              <div className="stat-icon"><Clock /></div>
+              <div className="stat-content">
+                <div className="stat-label">Pending</div>
+                <div className="stat-value">{stats?.pendingRequests ?? 0}</div>
+                <div className="stat-meta">Awaiting assignment</div>
+              </div>
+            </div>
+          </Card.Body>
+        </Card>
+
+        <Card elevation="elevated">
+          <Card.Body>
+            <div className="stat-card">
+              <div className="stat-icon"><TrendingUp /></div>
+              <div className="stat-content">
+                <div className="stat-label">In Progress</div>
+                <div className="stat-value">{stats?.inProgressRequests ?? 0}</div>
+                <div className="stat-meta">Active responses</div>
+              </div>
+            </div>
+          </Card.Body>
+        </Card>
+
+        <Card elevation="elevated">
+          <Card.Body>
+            <div className="stat-card">
+              <div className="stat-icon"><AlertCircle /></div>
+              <div className="stat-content">
+                <div className="stat-label">Critical</div>
+                <div className="stat-value">{stats?.criticalRequests ?? 0}</div>
+                <div className="stat-meta">High priority</div>
+              </div>
+            </div>
+          </Card.Body>
+        </Card>
+      </div>
+
+      {/* Charts Row */}
+      <div className="dashboard-charts-grid">
+        <Card elevation="default">
+          <Card.Header>
+            <h3>Requests by Category</h3>
+          </Card.Header>
+          <Card.Body>
+            <div style={{ width: '100%', height: 260 }}>
+              {categoryData.length > 0 ? (
+                <ResponsiveContainer width="100%" height={260}>
+                  <PieChart>
+                    <Pie
+                      data={categoryData}
+                      cx="50%"
+                      cy="50%"
+                      outerRadius={80}
+                      dataKey="value"
+                      label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                    >
+                      {categoryData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Pie>
+                    <Tooltip />
+                  </PieChart>
+                </ResponsiveContainer>
+              ) : (
+                <div className="empty-chart">No data</div>
+              )}
+            </div>
+          </Card.Body>
+        </Card>
+
+        <Card elevation="default">
+          <Card.Header>
+            <h3>Request Trend (24h)</h3>
+          </Card.Header>
+          <Card.Body>
+            <div style={{ width: '100%', height: 260 }}>
+              {requestTrendData.length > 0 ? (
+                <ResponsiveContainer width="100%" height={260}>
+                  <AreaChart data={requestTrendData}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="time" />
+                    <YAxis />
+                    <Tooltip />
+                    <Area type="monotone" dataKey="requests" stroke="#3b82f6" fill="#93c5fd" />
+                  </AreaChart>
+                </ResponsiveContainer>
+              ) : (
+                <div className="empty-chart">No data</div>
+              )}
+            </div>
+          </Card.Body>
+        </Card>
+      </div>
+
+      {/* Recent Requests */}
+      <Card elevation="default">
+        <Card.Header>
+          <div className="card-header-row">
+            <h3>Recent Emergency Requests</h3>
+            <Link className="btn-link" to="/admin/requests">View All</Link>
+          </div>
+        </Card.Header>
+        <Card.Body>
+          <div className="space-y-4">
+            {recentRequests.map((request) => (
+              <div key={request.id} className="request-item">
+                <div className="request-item-header">
+                  <span className="request-id">{request.id}</span>
+                  <div className="request-badges">
+                    <Badge variant={request.priority}>{request.priority}</Badge>
+                    <Badge variant={request.status}>{request.status}</Badge>
+                  </div>
+                </div>
+                <div className="request-item-type">
+                  <span className="disaster-icon">{getDisasterIcon(request.disasterType)}</span>
+                  <span className="disaster-type">{request.disasterType}</span>
+                  <span className="separator">•</span>
+                  <span className="category">{request.category}</span>
+                </div>
+                <p className="request-description">{request.description?.slice(0, 100)}...</p>
+                <p className="request-location">{request.location?.address}</p>
+                <div className="request-item-footer">
+                  <span className="request-contact">{request.contactName}</span>
+                  <Link className="btn-outline-sm" to="/admin/requests">View Details</Link>
+                </div>
+              </div>
+            ))}
+          </div>
+        </Card.Body>
+      </Card>
+    </div>
+  );
 };
 
 export default DashboardPage;

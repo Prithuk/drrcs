@@ -3,12 +3,12 @@
  */
 
 .navbar {
-  background: white;
-  border-bottom: 1px solid #e0e0e0;
+  background: var(--color-surface, #ffffff);
+  border-bottom: 1px solid var(--color-border, #e0e0e0);
   position: sticky;
   top: 0;
   z-index: 100;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow, 0 2px 4px rgba(0, 0, 0, 0.05));
 }
 
 .navbar-container {
@@ -35,20 +35,20 @@
 .navbar-toggle span {
   width: 24px;
   height: 2px;
-  background-color: #1a1a1a;
+  background-color: var(--color-text-primary, #1a1a1a);
   border-radius: 2px;
   transition: all 0.3s ease;
 }
 
 .navbar-toggle:hover span {
-  background-color: #0066cc;
+  background-color: var(--color-primary, #0066cc);
 }
 
 /* Brand */
 .navbar-brand {
   font-size: 20px;
   font-weight: 700;
-  color: #0066cc;
+  color: var(--color-primary, #0066cc);
   margin: 0;
   letter-spacing: 1px;
   flex: 1;
@@ -77,7 +77,7 @@
   background: none;
   border: none;
   cursor: pointer;
-  color: #1a1a1a;
+  color: var(--color-text-primary, #1a1a1a);
   padding: 8px;
   border-radius: 4px;
   position: relative;
@@ -85,15 +85,15 @@
 }
 
 .notification-bell:hover {
-  background-color: #f0f0f0;
+  background-color: var(--color-accent, rgba(0, 0, 0, 0.03));
 }
 
 .notification-badge {
   position: absolute;
   top: 0;
   right: 0;
-  background-color: #dc3545;
-  color: white;
+  background-color: var(--color-destructive, #dc3545);
+  color: var(--color-card, #ffffff);
   border-radius: 50%;
   width: 20px;
   height: 20px;
@@ -120,11 +120,11 @@
   border-radius: 6px;
   transition: background-color 0.2s ease;
   font-size: 14px;
-  color: #1a1a1a;
+  color: var(--color-text-primary, #1a1a1a);
 }
 
 .user-menu-toggle:hover {
-  background-color: #f0f0f0;
+  background-color: var(--color-accent, rgba(0, 0, 0, 0.03));
 }
 
 .user-avatar {
@@ -143,15 +143,16 @@
 .user-name {
   font-weight: 500;
   white-space: nowrap;
+  color: var(--color-text-primary, #1a1a1a);
 }
 
-/* Dropdown Menu */
+/* Dropdown Menu (colors use tokens) */
 .user-menu-dropdown {
   position: absolute;
   top: 100%;
   right: 0;
-  background: white;
-  border: 1px solid #e0e0e0;
+  background: var(--color-card, #ffffff);
+  border: 1px solid var(--color-border, #e0e0e0);
   border-radius: 8px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
   min-width: 280px;
@@ -184,19 +185,19 @@
 
 .user-name-full {
   font-weight: 600;
-  color: #1a1a1a;
+  color: var(--color-text-primary, #1a1a1a);
   font-size: 14px;
 }
 
 .user-email {
   font-size: 12px;
-  color: #666;
+  color: var(--color-text-secondary, #666);
   margin-top: 2px;
 }
 
 .user-role {
   font-size: 11px;
-  color: #0066cc;
+  color: var(--color-primary, #0066cc);
   font-weight: 600;
   text-transform: capitalize;
   margin-top: 4px;
@@ -219,12 +220,12 @@
   align-items: center;
   gap: 12px;
   font-size: 13px;
-  color: #1a1a1a;
+  color: var(--color-text-primary, #1a1a1a);
   transition: background-color 0.2s ease;
 }
 
 .menu-item:hover {
-  background-color: #f5f5f5;
+  background-color: var(--color-muted, #f5f5f5);
 }
 
 .menu-item svg {
@@ -233,8 +234,8 @@
 }
 
 .menu-item-danger:hover {
-  background-color: #fff5f5;
-  color: #dc3545;
+  background-color: var(--color-destructive-light, #fff5f5);
+  color: var(--color-destructive, #dc3545);
 }
 
 /* Mobile */
@@ -274,4 +275,38 @@
   .navbar-brand h1 {
     font-size: 16px;
   }
+}
+
+/* Dark mode adjustments */
+[data-theme='dark'] .navbar,
+.dark-mode .navbar {
+  background: var(--color-surface, #202124);
+  border-bottom: 1px solid var(--color-border, #35363a);
+  box-shadow: var(--shadow, 0 2px 4px rgba(0, 0, 0, 0.4));
+}
+
+[data-theme='dark'] .navbar-toggle span,
+.dark-mode .navbar-toggle span {
+  background-color: var(--color-text-primary, #f8f9fa);
+}
+
+[data-theme='dark'] .navbar-brand,
+.dark-mode .navbar-brand {
+  color: var(--color-primary, #8ab4f8);
+}
+
+[data-theme='dark'] .notification-bell,
+.dark-mode .notification-bell {
+  color: var(--color-text-primary, #f8f9fa);
+}
+
+[data-theme='dark'] .user-menu-toggle,
+.dark-mode .user-menu-toggle {
+  color: var(--color-text-primary, #f8f9fa);
+}
+
+[data-theme='dark'] .user-menu-dropdown,
+.dark-mode .user-menu-dropdown {
+  background: var(--color-card, #202124);
+  border: 1px solid var(--color-border, #35363a);
 }
