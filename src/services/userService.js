@@ -45,6 +45,33 @@ const mockUsers = [
     lastLogin: '2026-02-27T07:00:00Z',
     createdAt: '2025-07-22T08:00:00Z',
   },
+  {
+    id: 'user-006',
+    fullName: 'Sowjanya Gottimukkala',
+    email: 'sowjigottimukkala96@gmail.com',
+    role: 'admin',
+    status: 'active',
+    lastLogin: null,
+    createdAt: '2026-02-27T08:00:00Z',
+  },
+  {
+    id: 'user-007',
+    fullName: 'Prithu Kathet',
+    email: 'prithukathet@lewisu.edu',
+    role: 'admin',
+    status: 'active',
+    lastLogin: null,
+    createdAt: '2026-02-27T08:00:00Z',
+  },
+  {
+    id: 'user-008',
+    fullName: 'Sree Soumith Thanigondala',
+    email: 'sreesoumiththanigo@lewisu.edu',
+    role: 'admin',
+    status: 'active',
+    lastLogin: null,
+    createdAt: '2026-02-27T08:00:00Z',
+  },
 ];
 
 const delay = (ms = 200) => new Promise(resolve => setTimeout(resolve, ms));

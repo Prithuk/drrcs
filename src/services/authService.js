@@ -30,7 +30,7 @@ const MOCK_USERS = [
     id: '1',
     fullName: 'Hlay Aliotte',
     email: 'hlayaliotte@lewisu.edu',
-    password: 'Password@123', 
+    password: 'Password@123',
     role: 'admin',
   },
   {
@@ -40,7 +40,6 @@ const MOCK_USERS = [
     password: 'Password@123',
     role: 'admin',
   },
-  
   {
     id: '3',
     fullName: 'Sree Soumith Thanigondala',
@@ -48,7 +47,6 @@ const MOCK_USERS = [
     password: 'Password@123',
     role: 'admin',
   },
-  ,
   {
     id: '4',
     fullName: 'Admin Demo',
@@ -69,7 +67,15 @@ const MOCK_USERS = [
     email: 'org@drrcs.test',
     password: 'Organization@123',
     role: 'organization_staff',
-  }];
+  },
+  {
+    id: '7',
+    fullName: 'Sowjanya Gottimukkala',
+    email: 'sowjigottimukkala96@gmail.com',
+    password: 'Password@123',
+    role: 'admin',
+  },
+];
 
 /**
  * Sleep utility for simulating async operations
