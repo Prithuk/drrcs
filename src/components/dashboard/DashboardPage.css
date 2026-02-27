@@ -15,12 +15,12 @@
 .dashboard-welcome h1 {
   font-size: 32px;
   margin-bottom: 8px;
-  color: #1a1a1a;
+  color: var(--color-text-primary, #1a1a1a);
 }
 
 .dashboard-welcome p {
   font-size: 16px;
-  color: #666;
+  color: var(--color-text-secondary, #666);
   margin: 0;
 }
 
@@ -53,7 +53,7 @@
 
 .stat-label {
   font-size: 12px;
-  color: #666;
+  color: var(--color-text-secondary, #666);
   text-transform: uppercase;
   letter-spacing: 0.5px;
   font-weight: 500;
@@ -63,7 +63,7 @@
 .stat-value {
   font-size: 28px;
   font-weight: 700;
-  color: #1a1a1a;
+  color: var(--color-text-primary, #1a1a1a);
   margin-bottom: 4px;
 }
 
@@ -74,7 +74,7 @@
 
 .stat-meta {
   font-size: 12px;
-  color: #999;
+  color: var(--color-text-tertiary, #999);
 }
 
 /* Activity List */
@@ -89,7 +89,7 @@
   align-items: center;
   gap: 12px;
   padding: 12px;
-  background-color: #f9f9f9;
+  background-color: var(--color-background, #f9f9f9);
   border-radius: 4px;
 }
 
@@ -104,13 +104,13 @@
 
 .activity-action {
   font-size: 14px;
-  color: #1a1a1a;
+  color: var(--color-text-primary, #1a1a1a);
   font-weight: 500;
 }
 
 .activity-time {
   font-size: 12px;
-  color: #999;
+  color: var(--color-text-tertiary, #999);
   margin-top: 2px;
 }
 
@@ -205,13 +205,13 @@
 .quick-stat-item {
   text-align: center;
   padding: 16px;
-  background-color: #f9fafb;
+  background-color: var(--color-background, #f9fafb);
   border-radius: 8px;
 }
 
 .quick-stat-label {
   font-size: 12px;
-  color: #6b7280;
+  color: var(--color-text-secondary, #6b7280);
   margin-bottom: 8px;
   font-weight: 500;
 }
@@ -219,7 +219,7 @@
 .quick-stat-value {
   font-size: 24px;
   font-weight: 700;
-  color: #1f2937;
+  color: var(--color-text-primary, #1f2937);
 }
 
 /* Card Header Row */
@@ -234,7 +234,7 @@
   margin: 0;
   font-size: 18px;
   font-weight: 600;
-  color: #1f2937;
+  color: var(--color-text-primary, #1f2937);
 }
 
 /* Buttons */
@@ -254,9 +254,9 @@
 }
 
 .btn-outline-sm {
-  background: white;
-  border: 1px solid #d1d5db;
-  color: #374151;
+  background: var(--color-card, white);
+  border: 1px solid var(--color-border, #d1d5db);
+  color: var(--color-text-primary, #374151);
   font-size: 13px;
   padding: 6px 12px;
   border-radius: 6px;
@@ -266,8 +266,8 @@
 }
 
 .btn-outline-sm:hover {
-  background-color: #f9fafb;
-  border-color: #9ca3af;
+  background-color: var(--color-background, #f9fafb);
+  border-color: var(--color-text-tertiary, #9ca3af);
 }
 
 .btn-primary-sm {
@@ -295,14 +295,14 @@
 
 .request-item {
   padding: 16px;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--color-border, #e5e7eb);
   border-radius: 8px;
   transition: all 0.2s;
 }
 
 .request-item:hover {
-  background-color: #f9fafb;
-  border-color: #d1d5db;
+  background-color: var(--color-background, #f9fafb);
+  border-color: var(--color-border, #d1d5db);
 }
 
 .request-item-header {
@@ -315,7 +315,7 @@
 .request-id {
   font-family: 'Courier New', monospace;
   font-size: 13px;
-  color: #6b7280;
+  color: var(--color-text-secondary, #6b7280);
   font-weight: 600;
 }
 
@@ -329,7 +329,7 @@
   align-items: center;
   gap: 8px;
   font-size: 13px;
-  color: #6b7280;
+  color: var(--color-text-secondary, #6b7280);
   margin-bottom: 8px;
 }
 
@@ -343,19 +343,19 @@
 }
 
 .separator {
-  color: #d1d5db;
+  color: var(--color-border, #d1d5db);
 }
 
 .request-description {
   font-size: 14px;
-  color: #1f2937;
+  color: var(--color-text-primary, #1f2937);
   line-height: 1.5;
   margin: 8px 0;
 }
 
 .request-location {
   font-size: 13px;
-  color: #6b7280;
+  color: var(--color-text-secondary, #6b7280);
   margin: 8px 0;
 }
 
@@ -365,12 +365,12 @@
   align-items: center;
   margin-top: 12px;
   padding-top: 12px;
-  border-top: 1px solid #f3f4f6;
+  border-top: 1px solid var(--color-border, #f3f4f6);
 }
 
 .request-contact {
   font-size: 13px;
-  color: #6b7280;
+  color: var(--color-text-secondary, #6b7280);
 }
 
 /* Task List */
@@ -382,9 +382,9 @@
 
 .task-item {
   padding: 16px;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--color-border, #e5e7eb);
   border-radius: 8px;
-  background: white;
+  background: var(--color-card, white);
   transition: all 0.2s;
 }
 
@@ -402,19 +402,19 @@
 
 .task-distance {
   font-size: 12px;
-  color: #6b7280;
+  color: var(--color-text-secondary, #6b7280);
 }
 
 .task-title {
   font-size: 15px;
   font-weight: 600;
-  color: #1f2937;
+  color: var(--color-text-primary, #1f2937);
   margin: 8px 0;
 }
 
 .task-description {
   font-size: 14px;
-  color: #6b7280;
+  color: var(--color-text-secondary, #6b7280);
   line-height: 1.5;
   margin: 8px 0;
 }
@@ -428,7 +428,7 @@
 
 .task-location {
   font-size: 13px;
-  color: #6b7280;
+  color: var(--color-text-secondary, #6b7280);
 }
 
 /* Compact Request Item */
@@ -442,7 +442,7 @@
 
 .request-date {
   font-size: 12px;
-  color: #9ca3af;
+  color: var(--color-text-tertiary, #9ca3af);
 }
 
 /* Action Buttons */

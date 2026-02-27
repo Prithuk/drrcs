@@ -1,6 +1,4 @@
 import { useEffect, useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { 
   BarChart, 
   Bar, 
@@ -19,6 +17,7 @@ import {
 import { api } from '@/lib/api';
 import { EmergencyRequest } from '@/types';
 import { TrendingUp, AlertCircle, Clock, CheckCircle } from 'lucide-react';
+import './AnalyticsPage.css';
 
 export function AnalyticsPage() {
   const [requests, setRequests] = useState<EmergencyRequest[]>([]);
@@ -74,7 +73,6 @@ export function AnalyticsPage() {
     { name: 'Other', value: requests.filter(r => r.category === 'other').length },
   ];
 
-  // Response time mock data (hours)
   const responseTimeData = [
     { timeRange: '0-1h', count: 3 },
     { timeRange: '1-3h', count: 4 },
@@ -93,87 +91,80 @@ export function AnalyticsPage() {
     { day: 'Sun', completed: 7, total: 10 },
   ];
 
+  const completionRate = requests.length > 0
+    ? Math.round((requests.filter(r => r.status === 'completed').length / requests.length) * 100)
+    : 0;
+  const criticalPending = requests.filter(r => r.priority === 'critical' && r.status !== 'completed').length;
+
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading analytics...</p>
+      <div className="analytics-loading">
+        <div className="analytics-loading-inner">
+          <div className="analytics-spinner"></div>
+          <p className="analytics-loading-text">Loading analytics...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto">
+    <div className="analytics-wrapper">
       {/* Header */}
-      <div>
-        <h2 className="text-2xl font-semibold text-gray-900">Analytics & Reports</h2>
-        <p className="text-gray-600 mt-1">System performance and request insights</p>
+      <div className="analytics-header">
+        <h2>Analytics &amp; Reports</h2>
+        <p>System performance and request insights</p>
       </div>
 
       {/* Key Metrics */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">Total Requests</CardTitle>
-            <TrendingUp className="size-4 text-blue-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-gray-900">{requests.length}</div>
-            <p className="text-xs text-gray-500 mt-1">All time</p>
-          </CardContent>
-        </Card>
+      <div className="analytics-metric-grid">
+        <div className="analytics-metric-card">
+          <div className="analytics-metric-header">
+            <span className="analytics-metric-label">Total Requests</span>
+            <TrendingUp size={18} color="#3b82f6" />
+          </div>
+          <div className="analytics-metric-value">{requests.length}</div>
+          <div className="analytics-metric-sub">All time</div>
+        </div>
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">Completion Rate</CardTitle>
-            <CheckCircle className="size-4 text-green-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-gray-900">
-              {requests.length > 0 
-                ? Math.round((requests.filter(r => r.status === 'completed').length / requests.length) * 100)
-                : 0}%
-            </div>
-            <p className="text-xs text-gray-500 mt-1">
-              {requests.filter(r => r.status === 'completed').length} completed
-            </p>
-          </CardContent>
-        </Card>
+        <div className="analytics-metric-card">
+          <div className="analytics-metric-header">
+            <span className="analytics-metric-label">Completion Rate</span>
+            <CheckCircle size={18} color="#10b981" />
+          </div>
+          <div className="analytics-metric-value">{completionRate}%</div>
+          <div className="analytics-metric-sub">
+            {requests.filter(r => r.status === 'completed').length} completed
+          </div>
+        </div>
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">Avg Response Time</CardTitle>
-            <Clock className="size-4 text-orange-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-gray-900">2.4h</div>
-            <p className="text-xs text-gray-500 mt-1">From submission to assignment</p>
-          </CardContent>
-        </Card>
+        <div className="analytics-metric-card">
+          <div className="analytics-metric-header">
+            <span className="analytics-metric-label">Avg Response Time</span>
+            <Clock size={18} color="#f97316" />
+          </div>
+          <div className="analytics-metric-value">2.4h</div>
+          <div className="analytics-metric-sub">From submission to assignment</div>
+        </div>
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600">Critical Alerts</CardTitle>
-            <AlertCircle className="size-4 text-red-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-red-600">
-              {requests.filter(r => r.priority === 'critical').length}
-            </div>
-            <p className="text-xs text-gray-500 mt-1">Requiring immediate attention</p>
-          </CardContent>
-        </Card>
+        <div className="analytics-metric-card">
+          <div className="analytics-metric-header">
+            <span className="analytics-metric-label">Critical Alerts</span>
+            <AlertCircle size={18} color="#ef4444" />
+          </div>
+          <div className="analytics-metric-value red">
+            {requests.filter(r => r.priority === 'critical').length}
+          </div>
+          <div className="analytics-metric-sub">Requiring immediate attention</div>
+        </div>
       </div>
 
       {/* Charts Row 1 */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card>
-          <CardHeader>
-            <CardTitle>Request Status Distribution</CardTitle>
-          </CardHeader>
-          <CardContent>
+      <div className="analytics-charts-grid">
+        <div className="analytics-chart-card">
+          <div className="analytics-chart-header">
+            <h3 className="analytics-chart-title">Request Status Distribution</h3>
+          </div>
+          <div className="analytics-chart-body">
             <ResponsiveContainer width="100%" height={300}>
               <PieChart>
                 <Pie
@@ -193,14 +184,14 @@ export function AnalyticsPage() {
                 <Tooltip />
               </PieChart>
             </ResponsiveContainer>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Priority Distribution</CardTitle>
-          </CardHeader>
-          <CardContent>
+        <div className="analytics-chart-card">
+          <div className="analytics-chart-header">
+            <h3 className="analytics-chart-title">Priority Distribution</h3>
+          </div>
+          <div className="analytics-chart-body">
             <ResponsiveContainer width="100%" height={300}>
               <PieChart>
                 <Pie
@@ -220,17 +211,17 @@ export function AnalyticsPage() {
                 <Tooltip />
               </PieChart>
             </ResponsiveContainer>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </div>
 
       {/* Charts Row 2 */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card>
-          <CardHeader>
-            <CardTitle>Requests by Disaster Type</CardTitle>
-          </CardHeader>
-          <CardContent>
+      <div className="analytics-charts-grid">
+        <div className="analytics-chart-card">
+          <div className="analytics-chart-header">
+            <h3 className="analytics-chart-title">Requests by Disaster Type</h3>
+          </div>
+          <div className="analytics-chart-body">
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={disasterTypeData}>
                 <CartesianGrid strokeDasharray="3 3" />
@@ -240,14 +231,14 @@ export function AnalyticsPage() {
                 <Bar dataKey="value" fill="#3b82f6" />
               </BarChart>
             </ResponsiveContainer>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Requests by Category</CardTitle>
-          </CardHeader>
-          <CardContent>
+        <div className="analytics-chart-card">
+          <div className="analytics-chart-header">
+            <h3 className="analytics-chart-title">Requests by Category</h3>
+          </div>
+          <div className="analytics-chart-body">
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={categoryData}>
                 <CartesianGrid strokeDasharray="3 3" />
@@ -257,17 +248,17 @@ export function AnalyticsPage() {
                 <Bar dataKey="value" fill="#10b981" />
               </BarChart>
             </ResponsiveContainer>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </div>
 
       {/* Charts Row 3 */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card>
-          <CardHeader>
-            <CardTitle>Response Time Distribution</CardTitle>
-          </CardHeader>
-          <CardContent>
+      <div className="analytics-charts-grid">
+        <div className="analytics-chart-card">
+          <div className="analytics-chart-header">
+            <h3 className="analytics-chart-title">Response Time Distribution</h3>
+          </div>
+          <div className="analytics-chart-body">
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={responseTimeData}>
                 <CartesianGrid strokeDasharray="3 3" />
@@ -277,14 +268,14 @@ export function AnalyticsPage() {
                 <Bar dataKey="count" fill="#f59e0b" />
               </BarChart>
             </ResponsiveContainer>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Weekly Completion Rate</CardTitle>
-          </CardHeader>
-          <CardContent>
+        <div className="analytics-chart-card">
+          <div className="analytics-chart-header">
+            <h3 className="analytics-chart-title">Weekly Completion Rate</h3>
+          </div>
+          <div className="analytics-chart-body">
             <ResponsiveContainer width="100%" height={300}>
               <LineChart data={completionRateData}>
                 <CartesianGrid strokeDasharray="3 3" />
@@ -296,61 +287,58 @@ export function AnalyticsPage() {
                 <Line type="monotone" dataKey="completed" stroke="#10b981" name="Completed" />
               </LineChart>
             </ResponsiveContainer>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </div>
 
       {/* Insights */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Key Insights</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-3">
-            <div className="flex items-start gap-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-              <TrendingUp className="size-5 text-blue-600 mt-0.5" />
-              <div>
-                <p className="font-medium text-blue-900">High Activity Period</p>
-                <p className="text-sm text-blue-700">Most requests are received during morning hours (8 AM - 12 PM)</p>
-              </div>
+      <div className="analytics-insights-card">
+        <div className="analytics-insights-header">
+          <h3 className="analytics-insights-title">Key Insights</h3>
+        </div>
+        <div className="analytics-insights-body">
+          <div className="insight-item blue">
+            <span className="insight-icon blue"><TrendingUp size={20} /></span>
+            <div>
+              <p className="insight-title blue">High Activity Period</p>
+              <p className="insight-desc blue">Most requests are received during morning hours (8 AM – 12 PM)</p>
             </div>
+          </div>
 
-            <div className="flex items-start gap-3 p-3 bg-green-50 border border-green-200 rounded-lg">
-              <CheckCircle className="size-5 text-green-600 mt-0.5" />
+          <div className="insight-item green">
+            <span className="insight-icon green"><CheckCircle size={20} /></span>
+            <div>
+              <p className="insight-title green">Strong Completion Rate</p>
+              <p className="insight-desc green">
+                {completionRate}% of requests have been successfully completed
+              </p>
+            </div>
+          </div>
+
+          <div className="insight-item orange">
+            <span className="insight-icon orange"><Clock size={20} /></span>
+            <div>
+              <p className="insight-title orange">Fast Response Time</p>
+              <p className="insight-desc orange">Average response time is 2.4 hours from submission to assignment</p>
+            </div>
+          </div>
+
+          {criticalPending > 0 && (
+            <div className="insight-item red">
+              <span className="insight-icon red"><AlertCircle size={20} /></span>
               <div>
-                <p className="font-medium text-green-900">Strong Completion Rate</p>
-                <p className="text-sm text-green-700">
-                  {requests.length > 0 ? Math.round((requests.filter(r => r.status === 'completed').length / requests.length) * 100) : 0}% of requests 
-                  have been successfully completed
+                <p className="insight-title red">Critical Requests Pending</p>
+                <p className="insight-desc red">
+                  {criticalPending} critical {criticalPending === 1 ? 'request requires' : 'requests require'} immediate attention
                 </p>
               </div>
             </div>
-
-            <div className="flex items-start gap-3 p-3 bg-orange-50 border border-orange-200 rounded-lg">
-              <Clock className="size-5 text-orange-600 mt-0.5" />
-              <div>
-                <p className="font-medium text-orange-900">Fast Response Time</p>
-                <p className="text-sm text-orange-700">Average response time is 2.4 hours from submission to assignment</p>
-              </div>
-            </div>
-
-            {requests.filter(r => r.priority === 'critical').length > 0 && (
-              <div className="flex items-start gap-3 p-3 bg-red-50 border border-red-200 rounded-lg">
-                <AlertCircle className="size-5 text-red-600 mt-0.5" />
-                <div>
-                  <p className="font-medium text-red-900">Critical Requests Pending</p>
-                  <p className="text-sm text-red-700">
-                    {requests.filter(r => r.priority === 'critical' && r.status !== 'completed').length} critical requests 
-                    require immediate attention
-                  </p>
-                </div>
-              </div>
-            )}
-          </div>
-        </CardContent>
-      </Card>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
 
 export default AnalyticsPage;
+
