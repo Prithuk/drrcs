@@ -12,9 +12,9 @@ Disaster Relief Resource Coordination System - React Frontend Application
 
 ## Project Overview
 
-This is a React-based frontend for the Disaster Relief Resource Coordination System (DRRCS). Week 4 focuses on building the authentication UI with form validation and mocked API integration.
+This is a React-based frontend for the Disaster Relief Resource Coordination System (DRRCS). Frontend ocuses on building the authentication UI with form validation and mocked API integration.
 
-## Features (Week 4 Implementation)
+## Features (Implementation)
 
 ###  Completed
 
