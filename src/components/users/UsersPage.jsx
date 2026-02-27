@@ -29,6 +29,8 @@ const UsersPage = () => {
     fullName: '',
     email: '',
     role: 'volunteer',
+    password: '',
+    confirmPassword: '',
   });
   const [actionLoading, setActionLoading] = useState(false);
 
@@ -57,6 +59,14 @@ const UsersPage = () => {
 
   const handleAddUser = async (e) => {
     e.preventDefault();
+    if (formData.password !== formData.confirmPassword) {
+      setError('Passwords do not match.');
+      return;
+    }
+    if (formData.password.length < 6) {
+      setError('Password must be at least 6 characters.');
+      return;
+    }
     setActionLoading(true);
     setError(null);
 
@@ -64,7 +74,7 @@ const UsersPage = () => {
       const response = await createUser(formData, token);
       if (response.success) {
         setShowAddModal(false);
-        setFormData({ fullName: '', email: '', role: 'volunteer' });
+        setFormData({ fullName: '', email: '', role: 'volunteer', password: '', confirmPassword: '' });
         await loadUsers();
       } else {
         setError(response.message);
@@ -444,6 +454,34 @@ const UsersPage = () => {
                     <option value="organization_staff">Organization Staff</option>
                     <option value="admin">Admin</option>
                   </select>
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="password">Password *</label>
+                  <input
+                    id="password"
+                    type="password"
+                    value={formData.password}
+                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                    required
+                    className="form-input"
+                    placeholder="At least 6 characters"
+                    minLength={6}
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="confirmPassword">Confirm Password *</label>
+                  <input
+                    id="confirmPassword"
+                    type="password"
+                    value={formData.confirmPassword}
+                    onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+                    required
+                    className="form-input"
+                    placeholder="Re-enter password"
+                    minLength={6}
+                  />
                 </div>
               </div>
 

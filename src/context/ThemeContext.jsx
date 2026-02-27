@@ -33,6 +33,7 @@ const ThemeProvider = ({ children }) => {
       const root = document.documentElement;
       root.setAttribute('data-theme', theme);
       root.classList.toggle('dark-mode', theme === 'dark');
+      root.classList.toggle('dark', theme === 'dark');
       localStorage.setItem('app-theme', theme);
     } catch (error) {
       console.error('Error applying theme:', error);

@@ -11,9 +11,17 @@ import DashboardPage from './components/dashboard/DashboardPage';
 import ProfilePage from './pages/ProfilePage';
 import NotificationsPage from './pages/NotificationsPage';
 import UsersPage from './components/users/UsersPage';
-import Placeholder from './components/common/Placeholder';
 import { AnalyticsPage } from './pages/AnalyticsPage';
 import { RequestListPage } from './pages/RequestListPage';
+import VolunteersPage from './components/dashboard/VolunteersPage';
+import SettingsPage from './components/dashboard/SettingsPage';
+import VolunteerTasksPage from './components/dashboard/VolunteerTasksPage';
+import VolunteerRequestsPage from './components/dashboard/VolunteerRequestsPage';
+import HelpPage from './components/dashboard/HelpPage';
+import OrgRequestsPage from './components/dashboard/OrgRequestsPage';
+import TeamPage from './components/dashboard/TeamPage';
+import OrgSettingsPage from './components/dashboard/OrgSettingsPage';
+import RequestSubmissionPage from './pages/RequestSubmissionPage';
 import './App.css';
 
 // Protect routes - redirect to login if not authenticated
@@ -70,7 +78,8 @@ function AppRouter() {
           </ProtectedRoute>
         }
       />
-{/* Core pages */}
+
+      {/* Core pages */}
       <Route
         path="/users"
         element={
@@ -98,7 +107,7 @@ function AppRouter() {
         element={
           <ProtectedRoute>
             <MainLayout>
-              <Placeholder title="Volunteers" description="Admin volunteer management" />
+              <VolunteersPage />
             </MainLayout>
           </ProtectedRoute>
         }
@@ -118,7 +127,7 @@ function AppRouter() {
         element={
           <ProtectedRoute>
             <MainLayout>
-              <Placeholder title="Settings" description="Admin settings and configuration" />
+              <SettingsPage />
             </MainLayout>
           </ProtectedRoute>
         }
@@ -130,7 +139,7 @@ function AppRouter() {
         element={
           <ProtectedRoute>
             <MainLayout>
-              <Placeholder title="My Tasks" description="Volunteer task list" />
+              <VolunteerTasksPage />
             </MainLayout>
           </ProtectedRoute>
         }
@@ -140,7 +149,7 @@ function AppRouter() {
         element={
           <ProtectedRoute>
             <MainLayout>
-              <Placeholder title="Available Requests" description="Volunteer available requests" />
+              <VolunteerRequestsPage />
             </MainLayout>
           </ProtectedRoute>
         }
@@ -150,7 +159,7 @@ function AppRouter() {
         element={
           <ProtectedRoute>
             <MainLayout>
-              <Placeholder title="My Profile" description="Volunteer profile" />
+              <ProfilePage />
             </MainLayout>
           </ProtectedRoute>
         }
@@ -160,7 +169,7 @@ function AppRouter() {
         element={
           <ProtectedRoute>
             <MainLayout>
-              <Placeholder title="Help" description="Volunteer help and documentation" />
+              <HelpPage />
             </MainLayout>
           </ProtectedRoute>
         }
@@ -172,7 +181,7 @@ function AppRouter() {
         element={
           <ProtectedRoute>
             <MainLayout>
-              <Placeholder title="Submit Request" description="Organization: submit a new request" />
+              <RequestSubmissionPage />
             </MainLayout>
           </ProtectedRoute>
         }
@@ -182,7 +191,7 @@ function AppRouter() {
         element={
           <ProtectedRoute>
             <MainLayout>
-              <Placeholder title="My Requests" description="Organization requests" />
+              <OrgRequestsPage />
             </MainLayout>
           </ProtectedRoute>
         }
@@ -192,7 +201,7 @@ function AppRouter() {
         element={
           <ProtectedRoute>
             <MainLayout>
-              <Placeholder title="Team Members" description="Organization team management" />
+              <TeamPage />
             </MainLayout>
           </ProtectedRoute>
         }
@@ -202,7 +211,7 @@ function AppRouter() {
         element={
           <ProtectedRoute>
             <MainLayout>
-              <Placeholder title="Organization Settings" description="Organization settings" />
+              <OrgSettingsPage />
             </MainLayout>
           </ProtectedRoute>
         }
