@@ -2,6 +2,16 @@
 
 Disaster Relief Resource Coordination System - React Frontend Application
 
+## Contributors
+
+Thank you to the contributors who worked on this frontend:
+
+- Sowjanya Gottimukkala
+- Prithu Kathet
+- Sree Soumith Thanigondala
+- Hlay Aliotte
+
+
 ## Project Overview
 
 This is a React-based frontend for the Disaster Relief Resource Coordination System (DRRCS). Week 4 focuses on building the authentication UI with form validation and mocked API integration.
