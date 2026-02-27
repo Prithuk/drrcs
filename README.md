@@ -93,26 +93,48 @@ public/
    VITE_ENABLE_DEMO_MODE=true
    ```
 
-## Testing Demo Accounts
+## Testing Demo Accounts and Signing In
 
-The application includes pre-configured demo accounts for testing:
+The application includes pre-configured demo and admin accounts for local testing (mocked in `src/services/authService.js` and `src/services/userService.js`). Use the email/password pairs below to sign in via the login page (`/login`).
 
-### Admin Account
-- **Email**: admin@drrcs.test
-- **Password**: Admin@123456
-- **Role**: Administrator
+### Admin Accounts (added)
+- **Sowjanya Gottimukkala**
+   - Email: sowjigottimukkala96@gmail.com
+   - Password: Password@123
+   - Role: admin
+- **Prithu Kathet**
+   - Email: prithukathet@lewisu.edu
+   - Password: Password@123
+   - Role: admin
+- **Sree Soumith Thanigondala**
+   - Email: sreesoumiththanigo@lewisu.edu
+   - Password: Password@123
+   - Role: admin
 
-### Volunteer Account
-- **Email**: volunteer@drrcs.test
-- **Password**: Volunteer@123
-- **Role**: Volunteer
+### Existing Demo Accounts
+- **Admin Demo**
+   - Email: admin@drrcs.test
+   - Password: Admin@123456
+   - Role: admin
+- **Volunteer Demo**
+   - Email: volunteer@drrcs.test
+   - Password: Volunteer@123
+   - Role: volunteer
+- **Organization Demo**
+   - Email: org@drrcs.test
+   - Password: Organization@123
+   - Role: organization_staff
 
-### Organization Account
-- **Email**: org@drrcs.test
-- **Password**: Organization@123
-- **Role**: Organization Staff
+Signing in:
+- Open the app and navigate to the Login page (`/login`).
+- Enter the email and password for any demo account above and submit the form.
+- The app uses an in-memory mock service, so accounts are available only while the dev server is running.
 
-**Note**: Click the role buttons on the login form to auto-fill credentials.
+Quick-fill and testing tips:
+- The login form may include role quick-fill buttons — clicking them auto-populates demo credentials.
+- To add or change mock accounts, edit `src/services/authService.js` or `src/services/userService.js` and restart the dev server.
+
+Security note: These mock accounts store plain-text passwords for local testing only. Do not use these credentials in production.
 
 ## Available Scripts
 
