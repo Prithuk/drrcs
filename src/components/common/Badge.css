@@ -45,6 +45,43 @@
   color: #084298;
 }
 
+/* Dark Mode */
+[data-theme='dark'] .badge-default,
+.dark-mode .badge-default {
+  background-color: #35363a;
+  color: #dadce0;
+}
+
+[data-theme='dark'] .badge-success,
+.dark-mode .badge-success {
+  background-color: #1d3625;
+  color: #81c995;
+}
+
+[data-theme='dark'] .badge-warning,
+.dark-mode .badge-warning {
+  background-color: #3f3416;
+  color: #fdd663;
+}
+
+[data-theme='dark'] .badge-danger,
+.dark-mode .badge-danger {
+  background-color: #3a1f1f;
+  color: #f28482;
+}
+
+[data-theme='dark'] .badge-info,
+.dark-mode .badge-info {
+  background-color: #1a3a52;
+  color: #8ab4f8;
+}
+
+[data-theme='dark'] .badge-primary,
+.dark-mode .badge-primary {
+  background-color: #2d1b4e;
+  color: #c5b1ff;
+}
+
 /* Responsive */
 @media (max-width: 480px) {
   .badge {

@@ -24,13 +24,13 @@
 .requests-header h2 {
   font-size: 1.75rem;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--color-text-primary, #0f172a);
   letter-spacing: -0.02em;
 }
 
 .requests-header .muted,
 .muted {
-  color: #64748b;
+  color: var(--color-text-secondary, #64748b);
   font-size: 0.9375rem;
 }
 
@@ -41,7 +41,7 @@
   justify-content: center;
   height: 60vh;
   font-size: 1.125rem;
-  color: #64748b;
+  color: var(--color-text-secondary, #64748b);
   gap: 0.75rem;
 }
 
@@ -59,16 +59,16 @@
   align-items: center;
   margin-top: 1rem;
   padding-top: 0.75rem;
-  border-top: 1px solid #e2e8f0;
+  border-top: 1px solid var(--color-border, #e2e8f0);
 }
 
 .filters-summary {
   font-size: 0.875rem;
-  color: #64748b;
+  color: var(--color-text-secondary, #64748b);
 }
 
 .filters-summary strong {
-  color: #0f172a;
+  color: var(--color-text-primary, #0f172a);
   font-weight: 600;
 }
 
@@ -77,7 +77,7 @@
   width: 1rem;
   height: 1rem;
   flex-shrink: 0;
-  color: #64748b;
+  color: var(--color-text-secondary, #64748b);
 }
 
 .absolute-icon {
@@ -161,20 +161,20 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  color: #475569;
+  color: var(--color-text-secondary, #475569);
   font-size: 0.8125rem;
 }
 
 /* Contact cell */
 .contact-name {
   font-weight: 600;
-  color: #0f172a;
+  color: var(--color-text-primary, #0f172a);
   font-size: 0.875rem;
 }
 
 .contact-phone {
   font-size: 0.8rem;
-  color: #64748b;
+  color: var(--color-text-secondary, #64748b);
 }
 
 /* Disaster type cell */
@@ -184,7 +184,7 @@
   gap: 0.4rem;
   font-weight: 500;
   text-transform: capitalize;
-  color: #1e293b;
+  color: var(--color-text-primary, #1e293b);
 }
 
 /* ============================================================
@@ -244,6 +244,52 @@
   background: #f8fafc !important;
   color: #475569 !important;
   border: 1px solid #e2e8f0 !important;
+}
+
+/* ============================================================
+   DARK MODE BADGE OVERRIDES — ensure readable contrast
+   ============================================================ */
+
+[data-theme='dark'] .badge-danger,
+.dark-mode .badge-danger {
+  background: #3a1f1f !important;
+  color: #f28482 !important;
+  border: 1px solid #7a3030 !important;
+}
+
+[data-theme='dark'] .badge-warning,
+.dark-mode .badge-warning {
+  background: #3f3416 !important;
+  color: #fdd663 !important;
+  border: 1px solid #7a6522 !important;
+}
+
+[data-theme='dark'] .badge-info,
+.dark-mode .badge-info {
+  background: #1a3a52 !important;
+  color: #8ab4f8 !important;
+  border: 1px solid #2a5a82 !important;
+}
+
+[data-theme='dark'] .badge-success,
+.dark-mode .badge-success {
+  background: #1d3625 !important;
+  color: #81c995 !important;
+  border: 1px solid #2a5a3a !important;
+}
+
+[data-theme='dark'] .badge-primary,
+.dark-mode .badge-primary {
+  background: #2d1b4e !important;
+  color: #c5b1ff !important;
+  border: 1px solid #5a3b8a !important;
+}
+
+[data-theme='dark'] .badge-default,
+.dark-mode .badge-default {
+  background: #35363a !important;
+  color: #dadce0 !important;
+  border: 1px solid #5f6368 !important;
 }
 
 /* ============================================================
