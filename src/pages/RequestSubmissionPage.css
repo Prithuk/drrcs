@@ -8,6 +8,11 @@
   padding: 40px 20px;
 }
 
+[data-theme='dark'] .request-submission-page,
+.dark-mode .request-submission-page {
+  background: linear-gradient(135deg, #202124 0%, #292a2d 100%);
+}
+
 .request-submission-page.success {
   display: flex;
   align-items: center;
@@ -17,7 +22,7 @@
 .page-header {
   text-align: center;
   margin-bottom: 40px;
-  color: #1a1a1a;
+  color: var(--color-text-primary, #1a1a1a);
 }
 
 .page-header h1 {
@@ -28,7 +33,7 @@
 
 .page-header p {
   font-size: 16px;
-  color: #666;
+  color: var(--color-text-secondary, #666);
   margin: 0;
 }
 
@@ -41,7 +46,7 @@
 }
 
 .form-container {
-  background: white;
+  background: var(--color-surface, white);
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   padding: 0;
@@ -62,13 +67,13 @@
 .help-panel h3 {
   margin: 0;
   font-size: 16px;
-  color: #1a1a1a;
+  color: var(--color-text-primary, #1a1a1a);
 }
 
 .help-panel ul {
   margin: 0;
   padding-left: 20px;
-  color: #666;
+  color: var(--color-text-secondary, #666);
   font-size: 13px;
   line-height: 1.6;
 }
@@ -79,13 +84,13 @@
 
 .help-panel p {
   margin: 0 0 12px 0;
-  color: #666;
+  color: var(--color-text-secondary, #666);
   font-size: 13px;
 }
 
 /* Success Message */
 .success-container {
-  background: white;
+  background: var(--color-surface, white);
   border-radius: 12px;
   padding: 60px 40px;
   text-align: center;
@@ -110,12 +115,12 @@
 
 .success-container h2 {
   font-size: 24px;
-  color: #1a1a1a;
+  color: var(--color-text-primary, #1a1a1a);
   margin: 0 0 8px 0;
 }
 
 .success-container > p {
-  color: #666;
+  color: var(--color-text-secondary, #666);
   margin: 0 0 24px 0;
 }
 
@@ -145,8 +150,26 @@
   word-break: break-all;
 }
 
+/* Dark mode overrides for request-id */
+[data-theme='dark'] .request-id,
+.dark-mode .request-id {
+  background: #1a3a52;
+  border-color: #2a5a82;
+}
+
+[data-theme='dark'] .request-id strong,
+.dark-mode .request-id strong {
+  color: #f8f9fa;
+}
+
+[data-theme='dark'] .request-id span,
+.dark-mode .request-id span {
+  background: #292a2d;
+  color: #8ab4f8;
+}
+
 .redirect-message {
-  color: #999;
+  color: var(--color-text-tertiary, #999);
   font-size: 13px;
   margin: 0;
 }

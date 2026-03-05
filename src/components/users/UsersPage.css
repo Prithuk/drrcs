@@ -249,6 +249,11 @@
   background-color: #fef2f2;
 }
 
+[data-theme='dark'] .btn-icon-danger:hover:not(:disabled),
+.dark-mode .btn-icon-danger:hover:not(:disabled) {
+  background-color: rgba(220, 38, 38, 0.15);
+}
+
 /* Empty State */
 .users-empty {
   text-align: center;
@@ -544,15 +549,18 @@
 }
 
 /* Dark Mode Support */
+[data-theme='dark'] .alert-error,
+.dark-mode .alert-error {
+  background-color: rgba(153, 27, 27, 0.1);
+  color: #fca5a5;
+  border-color: rgba(153, 27, 27, 0.2);
+}
+
 @media (prefers-color-scheme: dark) {
   .alert-error {
     background-color: rgba(153, 27, 27, 0.1);
     color: #fca5a5;
     border-color: rgba(153, 27, 27, 0.2);
-  }
-
-  .btn-icon-danger:hover:not(:disabled) {
-    background-color: rgba(220, 38, 38, 0.1);
   }
 }
 
