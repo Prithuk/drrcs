@@ -23,6 +23,7 @@ import java.time.LocalDateTime;
 @Slf4j
 public class EmergencyService {
     private final EmergencyRepository emergencyRepository;
+    private final EmergencyEventPublisher emergencyEventPublisher;
     // going to do call emergencyREPO,
 
     @Transactional
@@ -36,6 +37,7 @@ public class EmergencyService {
         log.info("FROM SERVICE: ", emergency);
 
         Emergency savedEmergency = emergencyRepository.save(emergency);
+        emergencyEventPublisher.publishEmergencyCreated(savedEmergency);
         log.info("Emergency saved with ID: {}", savedEmergency.getId());
         return EmergencyResponse.fromEntity(savedEmergency);
     }
@@ -88,6 +90,7 @@ public class EmergencyService {
             emergency.setResolvedAt(LocalDateTime.now());
         }
         Emergency updatedEmergency = emergencyRepository.save(emergency);
+        emergencyEventPublisher.publishStatusUpdated(updatedEmergency);
         return EmergencyResponse.fromEntity(updatedEmergency);
     }
 
@@ -105,6 +108,7 @@ public class EmergencyService {
         emergency.setStatus(Status.ASSIGNED);
         emergency.setUpdatedAt(LocalDateTime.now());
         Emergency updated = emergencyRepository.save(emergency);
+        emergencyEventPublisher.publishVolunteerAssigned(updated, volunteerId);
         return EmergencyResponse.fromEntity(updated);
     }
 
