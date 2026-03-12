@@ -26,6 +26,13 @@ const ResourceNeedsSection = ({ resourceNeeds, onChange, errors = {} }) => {
     });
   };
 
+  const handleOtherResourcesChange = (value) => {
+    onChange({
+      ...resourceNeeds,
+      other: value
+    });
+  };
+
   return (
     <div className="resource-needs-section">
       {/* Food & Water */}
@@ -187,12 +194,12 @@ const ResourceNeedsSection = ({ resourceNeeds, onChange, errors = {} }) => {
 
       {/* Other Resources */}
       <div className="resource-item">
-        <label htmlFor="other-resources">📦 Other Resources Needed:</label>
+        <label htmlFor="other-resources" className="resource-other-label">📦 Other Resources Needed:</label>
         <textarea
           id="other-resources"
           placeholder="List any other resources needed (e.g., generators, vehicles, communication equipment)"
           value={resourceNeeds.other}
-          onChange={(e) => handleResourceChange('other', 'text', e.target.value)}
+          onChange={(e) => handleOtherResourcesChange(e.target.value)}
           className="resource-textarea"
           rows="3"
         />
