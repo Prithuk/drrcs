@@ -57,7 +57,10 @@ export function RequestListPage() {
   const loadRequests = async () => {
     try {
       const data = await api.getRequests();
-      setRequests(data);
+      const sorted = [...data].sort(
+        (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+      );
+      setRequests(sorted);
     } catch (error) {
       console.error('Failed to load requests:', error);
     } finally {
@@ -107,10 +110,10 @@ export function RequestListPage() {
         <p className="muted">Manage and track all emergency requests</p>
       </div>
 
-      <Card>
+      <Card className="filters-card">
         <CardHeader>
           <CardTitle>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <div className="filters-title-row">
               <Filter className="icon" /> Filters
             </div>
           </CardTitle>
@@ -119,11 +122,11 @@ export function RequestListPage() {
           <div className="filters-grid">
             <div className="relative">
               <Search className="icon absolute-icon" />
-              <Input placeholder="Search requests..." value={searchQuery} onChange={(e: ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value)} className="pl-10" />
+              <Input placeholder="Search requests..." value={searchQuery} onChange={(e: ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value)} className="pl-10 filter-search-input" />
             </div>
 
             <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger>
+              <SelectTrigger className="filter-select-trigger">
                 <SelectValue placeholder="All Status" />
               </SelectTrigger>
               <SelectContent>
@@ -137,7 +140,7 @@ export function RequestListPage() {
             </Select>
 
             <Select value={priorityFilter} onValueChange={setPriorityFilter}>
-              <SelectTrigger>
+              <SelectTrigger className="filter-select-trigger">
                 <SelectValue placeholder="All Priorities" />
               </SelectTrigger>
               <SelectContent>
@@ -150,7 +153,7 @@ export function RequestListPage() {
             </Select>
 
             <Select value={disasterFilter} onValueChange={setDisasterFilter}>
-              <SelectTrigger>
+              <SelectTrigger className="filter-select-trigger">
                 <SelectValue placeholder="All Disasters" />
               </SelectTrigger>
               <SelectContent>

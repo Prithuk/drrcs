@@ -39,9 +39,12 @@ export const DashboardPage = () => {
         api.getDashboardStats(),
         api.getRequests(),
       ]);
+      const sortedRequests = [...requestsData].sort(
+        (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+      );
       setStats(statsData);
-      setRequests(requestsData);
-      setRecentRequests(requestsData.slice(0, 5));
+      setRequests(sortedRequests);
+      setRecentRequests(sortedRequests.slice(0, 5));
     } catch (error) {
       console.error('Failed to load dashboard data:', error);
     } finally {
@@ -254,7 +257,7 @@ export const DashboardPage = () => {
                 <p className="request-location">{request.location?.address}</p>
                 <div className="request-item-footer">
                   <span className="request-contact">{request.contactName}</span>
-                  <Link className="btn-outline-sm" to="/admin/requests">View Details</Link>
+                  <Link className="btn-outline-sm" to={`/requests/${request.id}`}>View Details</Link>
                 </div>
               </div>
             ))}

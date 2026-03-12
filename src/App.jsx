@@ -22,6 +22,7 @@ import OrgRequestsPage from './components/dashboard/OrgRequestsPage';
 import TeamPage from './components/dashboard/TeamPage';
 import OrgSettingsPage from './components/dashboard/OrgSettingsPage';
 import RequestSubmissionPage from './pages/RequestSubmissionPage';
+import RequestDetailPage from './pages/RequestDetailPage';
 import HomePage from './pages/HomePage';
 import LiveActivityPage from './pages/LiveActivityPage';
 import './App.css';
@@ -41,6 +42,7 @@ function AppRouter() {
     <Routes>
       <Route path="/" element={<HomePage />} />
       <Route path="/live-activity" element={<LiveActivityPage />} />
+      <Route path="/submit-emergency-request" element={<RequestSubmissionPage />} />
       <Route
         path="/login"
         element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <LoginPage />}
@@ -102,6 +104,16 @@ function AppRouter() {
           <ProtectedRoute>
             <MainLayout>
               <RequestListPage />
+            </MainLayout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/requests/:id"
+        element={
+          <ProtectedRoute>
+            <MainLayout>
+              <RequestDetailPage />
             </MainLayout>
           </ProtectedRoute>
         }
@@ -182,13 +194,7 @@ function AppRouter() {
       {/* Organization staff routes */}
       <Route
         path="/org/submit-request"
-        element={
-          <ProtectedRoute>
-            <MainLayout>
-              <RequestSubmissionPage />
-            </MainLayout>
-          </ProtectedRoute>
-        }
+        element={<RequestSubmissionPage />}
       />
       <Route
         path="/org/requests"

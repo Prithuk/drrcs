@@ -117,9 +117,9 @@ const HomePage = () => {
                 We provide coordinated emergency relief and support to communities affected by natural disasters. Available 24/7 to respond to your emergency needs.
               </p>
               <div className="hero-actions">
-                <Link to="/login" className="hero-btn hero-btn-primary">
+                <Link to="/submit-emergency-request" className="hero-btn hero-btn-primary">
                   <AlertCircle size={16} />
-                  Sign In to Submit Request
+                  Submit Emergency Request
                 </Link>
                 <Link to="/live-activity" className="hero-btn hero-btn-secondary hero-btn-alert">
                   Live Activity
@@ -252,7 +252,7 @@ const HomePage = () => {
             <div className="how-grid">
               <article className="how-card">
                 <span className="how-step">1</span>
-                <h3>Submit Request</h3>
+                <h3>Submit Emergency Request</h3>
                 <p>Report your emergency through our online form, phone hotline, or mobile app.</p>
               </article>
               <article className="how-card">
@@ -274,7 +274,7 @@ const HomePage = () => {
             <h2>Need Emergency Assistance?</h2>
             <p>Our team is standing by 24/7 to respond to disaster emergencies. Don't hesitate to reach out.</p>
             <div className="emergency-cta-actions">
-              <Link to="/login" className="emergency-btn emergency-btn-solid">
+              <Link to="/submit-emergency-request" className="emergency-btn emergency-btn-solid">
                 <AlertCircle size={16} />
                 Submit Emergency Request
               </Link>
@@ -292,7 +292,7 @@ const HomePage = () => {
           <div className="public-footer-grid">
             <section className="public-footer-about">
               <div className="public-footer-brand">
-                <span className="public-brand-icon" aria-hidden="true">
+                <span className="public-brand-icon public-footer-brand-icon" aria-hidden="true">
                   <Shield size={18} />
                 </span>
                 <div>

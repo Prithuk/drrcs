@@ -26,7 +26,7 @@ This week focuses on initializing the React project, installing required depende
 **Initial Configuration Files:**
 - [ ] package.json with project metadata and scripts
 - [ ] .gitignore for Node modules and build artifacts
-- [ ] .env.example for environment variables
+- [ ] frontend.environment for environment variables
 - [ ] README.md with setup instructions
 - [ ] package-lock.json or yarn.lock
 
@@ -129,7 +129,7 @@ recovery-app/
 │   ├── App.jsx             # Main app component
 │   └── main.jsx            # Entry point
 ├── tests/                  # Test files
-├── .env.example            # Environment variables template
+├── frontend.environment    # Environment variables reference
 ├── .gitignore              # Git ignore rules
 ├── .eslintrc.json          # ESLint configuration
 ├── .prettierrc              # Prettier configuration
@@ -211,6 +211,6 @@ recovery-app/
 - Consider using TypeScript for better type safety (optional but recommended)
 - Install ESLint and Prettier to maintain code quality from the start
 - Keep the node_modules/ directory in .gitignore
-- Create .env.example to document required environment variables
+- Create frontend.environment to document required environment variables
 - Ensure all team members use the same Node.js version (consider using .nvmrc or similar)
 - Document any custom scripts or configurations in README

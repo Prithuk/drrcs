@@ -568,7 +568,7 @@ const RequestForm = ({ onSuccess, onCancel }) => {
             className="btn-submit"
             disabled={loading}
           >
-            {loading ? '⏳ Submitting...' : '✓ Submit Request'}
+            {loading ? '⏳ Submitting...' : '✓ Submit Emergency Request'}
           </button>
         </div>
       </div>

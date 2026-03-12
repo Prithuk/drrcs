@@ -92,14 +92,30 @@ public/
 
 1. **Copy environment template**
    ```bash
-   cp .env.example .env.local
+   # macOS/Linux
+   cp frontend.environment .env.local
+
+   # Windows PowerShell
+   Copy-Item frontend.environment .env.local
    ```
 
 2. **Configure if needed** (currently using mocked API)
    ```
-   VITE_API_BASE_URL=http://localhost:3001/api
+   VITE_API_BASE_URL=http://localhost:8080/api
    VITE_ENABLE_DEMO_MODE=true
    ```
+
+3. **Backend handoff for cloud database**
+   ```bash
+   # Share this template with backend and fill real values there
+   # macOS/Linux: cp backend.environment .env
+   # PowerShell: Copy-Item backend.environment .env
+   ```
+
+   Minimum backend variables for MongoDB Atlas:
+   - `MONGODB_URI`
+   - `MONGODB_DATABASE`
+   - `CORS_ALLOWED_ORIGINS`
 
 ## Testing Demo Accounts and Signing In
 

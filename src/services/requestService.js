@@ -3,6 +3,24 @@
  * API service for disaster request submission and management
  */
 
+import { api } from '../lib/api';
+
+const REQUEST_FORM_PAYLOADS_KEY = 'drrcs_request_form_payloads';
+
+const saveRequestFormPayload = (requestId, requestData) => {
+  try {
+    const existing = localStorage.getItem(REQUEST_FORM_PAYLOADS_KEY);
+    const payloads = existing ? JSON.parse(existing) : {};
+    payloads[requestId] = {
+      ...requestData,
+      savedAt: new Date().toISOString()
+    };
+    localStorage.setItem(REQUEST_FORM_PAYLOADS_KEY, JSON.stringify(payloads));
+  } catch {
+    // Ignore payload persistence failures in mock mode
+  }
+};
+
 /**
  * Generate a unique request ID
  * @returns {string} - Unique request ID in format REQ-YYYYMMDD-XXXXX
@@ -19,46 +37,65 @@ const generateRequestId = () => {
  * @returns {Promise} - Promise resolving to response object
  */
 export const submitRequest = async (requestData) => {
-  return new Promise((resolve, reject) => {
-    // Simulate network delay
-    setTimeout(() => {
-      try {
-        // Validate that required fields are present
-        if (!requestData.title || !requestData.description || !requestData.disasterType) {
-          reject({
-            success: false,
-            message: 'Missing required fields',
-            errors: ['title', 'description', 'disasterType']
-          });
-          return;
-        }
+  // Validate required fields early for consistent UI error handling
+  if (!requestData.title || !requestData.description || !requestData.disasterType) {
+    throw {
+      success: false,
+      message: 'Missing required fields',
+      errors: ['title', 'description', 'disasterType']
+    };
+  }
 
-        // Simulate successful submission
-        const requestId = generateRequestId();
-        const response = {
-          success: true,
-          requestId: requestId,
-          message: `Request ${requestId} submitted successfully`,
-          timestamp: new Date().toISOString(),
-          status: 'pending',
-          data: {
-            requestId: requestId,
-            ...requestData,
-            submittedAt: new Date().toISOString(),
-            status: 'pending'
-          }
-        };
+  const resolveCategory = (resourceNeeds = {}) => {
+    if (resourceNeeds.medical?.needed) return 'medical';
+    if (resourceNeeds.shelter?.needed) return 'shelter';
+    if (resourceNeeds.food?.needed) return 'food';
+    if (resourceNeeds.searchRescue?.needed) return 'rescue';
+    return 'other';
+  };
 
-        resolve(response);
-      } catch (error) {
-        reject({
-          success: false,
-          message: 'Failed to submit request',
-          error: error.message
-        });
+  const resolvePriority = (priority) => {
+    const supported = new Set(['critical', 'high', 'medium', 'low']);
+    return supported.has(priority) ? priority : 'medium';
+  };
+
+  try {
+    const createdRequest = await api.createRequest({
+      disasterType: requestData.disasterType,
+      category: resolveCategory(requestData.resourceNeeds),
+      priority: resolvePriority(requestData.priority),
+      status: 'pending',
+      location: {
+        address: [requestData.location?.city, requestData.location?.state].filter(Boolean).join(', ') || 'Location not specified'
+      },
+      description: requestData.description,
+      contactName: requestData.contact?.primaryName || requestData.authorizedBy || 'Unknown Contact',
+      contactPhone: requestData.contact?.primaryPhone || 'N/A',
+      notes: requestData.title
+    });
+
+    saveRequestFormPayload(createdRequest.id, requestData);
+
+    return {
+      success: true,
+      requestId: createdRequest.id,
+      message: `Request ${createdRequest.id} submitted successfully`,
+      timestamp: createdRequest.timestamp,
+      status: createdRequest.status,
+      data: {
+        requestId: createdRequest.id,
+        ...requestData,
+        submittedAt: createdRequest.timestamp,
+        status: createdRequest.status
       }
-    }, 1000); // Simulate 1 second network delay
-  });
+    };
+  } catch (error) {
+    throw {
+      success: false,
+      message: 'Failed to submit request',
+      error: error?.message || String(error)
+    };
+  }
 };
 
 /**

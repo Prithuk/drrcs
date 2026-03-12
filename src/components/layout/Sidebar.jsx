@@ -22,7 +22,7 @@ const MENU_ITEMS = {
   ],
   organization_staff: [
     { label: 'Dashboard', icon: '📊', path: '/dashboard' },
-    { label: 'Submit Request', icon: '➕', path: '/org/submit-request' },
+    { label: 'Submit Emergency Request', icon: '➕', path: '/submit-emergency-request' },
     { label: 'My Requests', icon: '📋', path: '/org/requests' },
     { label: 'Team Members', icon: '👥', path: '/org/team' },
     { label: 'Settings', icon: '⚙️', path: '/org/settings' },

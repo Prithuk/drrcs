@@ -3,11 +3,39 @@ import { mockRequests } from './mockData';
 
 // Mock API functions that will be replaced with actual API calls to Java Spring Boot backend
 
-const API_BASE_URL = 'http://localhost:8080/api'; // Replace with your backend URL
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api';
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+const REQUESTS_STORAGE_KEY = 'drrcs_requests_store';
 
 // Simulate network delay
 const simulateDelay = () => delay(300);
+
+const getStoredRequests = (): EmergencyRequest[] => {
+  try {
+    const stored = localStorage.getItem(REQUESTS_STORAGE_KEY);
+    if (stored) {
+      return JSON.parse(stored) as EmergencyRequest[];
+    }
+  } catch {
+    // Fall back to seeded data
+  }
+
+  const seeded = [...mockRequests];
+  try {
+    localStorage.setItem(REQUESTS_STORAGE_KEY, JSON.stringify(seeded));
+  } catch {
+    // Ignore storage write failures and continue in-memory
+  }
+  return seeded;
+};
+
+const saveStoredRequests = (requests: EmergencyRequest[]): void => {
+  try {
+    localStorage.setItem(REQUESTS_STORAGE_KEY, JSON.stringify(requests));
+  } catch {
+    // Ignore storage write failures in mock mode
+  }
+};
 
 export const api = {
   // Authentication
@@ -38,38 +66,43 @@ export const api = {
   async getRequests(): Promise<EmergencyRequest[]> {
     await simulateDelay();
     // Replace with: fetch(`${API_BASE_URL}/requests`, { headers: { Authorization: `Bearer ${token}` } })
-    return [...mockRequests];
+    return [...getStoredRequests()];
   },
 
   async getRequestById(id: string): Promise<EmergencyRequest | null> {
     await simulateDelay();
     // Replace with: fetch(`${API_BASE_URL}/requests/${id}`, { headers: { Authorization: `Bearer ${token}` } })
-    return mockRequests.find(req => req.id === id) || null;
+    const requests = getStoredRequests();
+    return requests.find(req => req.id === id) || null;
   },
 
   async createRequest(request: Omit<EmergencyRequest, 'id' | 'timestamp'>): Promise<EmergencyRequest> {
     await simulateDelay();
     // Replace with: fetch(`${API_BASE_URL}/requests`, { method: 'POST', body: JSON.stringify(request) })
+    const requests = getStoredRequests();
     const newRequest: EmergencyRequest = {
       ...request,
-      id: `REQ-2026-${String(mockRequests.length + 1).padStart(3, '0')}`,
+      id: `REQ-2026-${String(requests.length + 1).padStart(3, '0')}`,
       timestamp: new Date().toISOString()
     };
-    mockRequests.push(newRequest);
+    requests.push(newRequest);
+    saveStoredRequests(requests);
     return newRequest;
   },
 
   async updateRequest(id: string, updates: Partial<EmergencyRequest>): Promise<EmergencyRequest> {
     await simulateDelay();
     // Replace with: fetch(`${API_BASE_URL}/requests/${id}`, { method: 'PUT', body: JSON.stringify(updates) })
-    const index = mockRequests.findIndex(req => req.id === id);
+    const requests = getStoredRequests();
+    const index = requests.findIndex(req => req.id === id);
     if (index !== -1) {
-      mockRequests[index] = {
-        ...mockRequests[index],
+      requests[index] = {
+        ...requests[index],
         ...updates,
         updatedAt: new Date().toISOString()
       };
-      return mockRequests[index];
+      saveStoredRequests(requests);
+      return requests[index];
     }
     throw new Error('Request not found');
   },
@@ -98,7 +131,7 @@ export const api = {
   async getDashboardStats(): Promise<DashboardStats> {
     await simulateDelay();
     // Replace with: fetch(`${API_BASE_URL}/dashboard/stats`, { headers: { Authorization: `Bearer ${token}` } })
-    const requests = mockRequests;
+    const requests = getStoredRequests();
     const pending = requests.filter(r => r.status === 'pending').length;
     const inProgress = requests.filter(r => r.status === 'in-progress').length;
     const completed = requests.filter(r => r.status === 'completed').length;

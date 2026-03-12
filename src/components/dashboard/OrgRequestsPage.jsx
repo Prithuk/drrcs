@@ -30,7 +30,7 @@ const OrgRequestsPage = () => {
           <h1>My Requests</h1>
           <p>Track all emergency requests submitted by your organization</p>
         </div>
-        <a href="/org/submit-request" className="btn btn-primary">➕ New Request</a>
+        <a href="/submit-emergency-request" className="btn btn-primary">➕ Submit Emergency Request</a>
       </div>
 
       <div className="org-req-filters">

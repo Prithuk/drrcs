@@ -242,6 +242,11 @@
   border-color: var(--error-hover);
 }
 
+.hero-btn-alert.hero-btn-secondary:hover {
+  background: var(--error-hover);
+  border-color: var(--error-hover);
+}
+
 .hero-btn[aria-disabled='true'] {
   cursor: not-allowed;
 }
@@ -462,6 +467,9 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: flex-start;
+  position: relative;
+  overflow: hidden;
   transition: transform 0.55s ease, box-shadow 0.55s ease, border-color 0.55s ease;
 }
 
@@ -481,6 +489,7 @@
 .coverage-card h3 {
   margin: 10px 0 0;
   font-size: 18px;
+  text-align: center;
 }
 
 .coverage-card p {
@@ -489,19 +498,7 @@
   font-size: 14px;
   line-height: 1.45;
   min-height: 72px;
-  visibility: hidden;
-  opacity: 0;
-  max-height: none;
-  overflow: visible;
-  transform: translateY(8px);
-  transition: opacity 0.6s ease, transform 0.6s ease;
-}
-
-.coverage-card:hover p,
-.coverage-card:focus-visible p {
-  visibility: visible;
-  opacity: 1;
-  transform: translateY(0);
+  text-align: center;
 }
 
 .coverage-icon {
@@ -656,6 +653,7 @@
 .public-footer {
   background: #111827;
   color: #f9fafb;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
 .public-footer-content {
@@ -671,7 +669,7 @@
 }
 
 .public-footer-about p {
-  color: #f3f4f6;
+  color: #d1d5db;
 }
 
 .public-footer-about {
@@ -685,6 +683,12 @@
   margin-bottom: 10px;
 }
 
+.public-footer-brand-icon {
+  background: rgba(17, 24, 39, 0.55);
+  color: #f9fafb;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
 .public-footer-brand h3 {
   margin: 0;
   color: #fff !important;
@@ -692,7 +696,7 @@
 
 .public-footer-brand p {
   margin: 0;
-  color: #e5e7eb;
+  color: #d1d5db;
   font-size: 12px;
 }
 
@@ -713,7 +717,7 @@
 
 .public-footer-links a,
 .public-footer-contact li {
-  color: #f3f4f6;
+  color: #d1d5db;
   text-decoration: none;
   font-size: 14px;
 }
@@ -724,7 +728,7 @@
   border: 0;
   padding: 0;
   margin: 0;
-  color: #f3f4f6;
+  color: #d1d5db;
   font-family: inherit;
   font-size: 14px;
   line-height: 1.4;
@@ -857,12 +861,61 @@
 }
 
 .public-footer-bottom {
-  border-top: 1px solid #374151;
+  border-top: 1px solid rgba(229, 231, 235, 0.35);
   margin-top: 22px;
   padding-top: 16px;
   text-align: center;
   color: #9ca3af;
   font-size: 13px;
+}
+
+@media (hover: hover) {
+  .coverage-card {
+    justify-content: center;
+  }
+
+  .coverage-icon {
+    position: static;
+    opacity: 1;
+    transform: translateY(0);
+    margin-bottom: 10px;
+    transition: transform 0.7s ease;
+  }
+
+  .coverage-card h3 {
+    margin: 0;
+    transform: translateY(0);
+    transition: transform 0.7s ease;
+  }
+
+  .coverage-card p {
+    margin: 0;
+    position: absolute;
+    left: 14px;
+    right: 14px;
+    bottom: 20px;
+    visibility: hidden;
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+
+  .coverage-card:hover h3,
+  .coverage-card:focus-visible h3 {
+    transform: translateY(-52px);
+  }
+
+  .coverage-card:hover .coverage-icon,
+  .coverage-card:focus-visible .coverage-icon {
+    transform: translateY(-52px);
+  }
+
+  .coverage-card:hover p,
+  .coverage-card:focus-visible p {
+    visibility: visible;
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @media (max-width: 1024px) {
@@ -1025,10 +1078,26 @@
 }
 
 @media (hover: none) {
+  .coverage-card {
+    justify-content: flex-start;
+    min-height: 250px;
+  }
+
+  .coverage-icon {
+    position: static;
+    opacity: 1;
+    transform: none;
+  }
+
+  .coverage-card h3 {
+    transform: none;
+  }
+
   .coverage-card p {
     visibility: visible;
     opacity: 1;
     transform: translateY(0);
+    position: static;
   }
 }
 
