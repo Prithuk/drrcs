@@ -1,6 +1,5 @@
 package com.lewis.disaster_relief_platform.emergency.controller;
 
-
 import com.lewis.disaster_relief_platform.common.dto.ApiResponse;
 import com.lewis.disaster_relief_platform.common.dto.PageResponse;
 import com.lewis.disaster_relief_platform.emergency.dto.request.EmergencyRequest;

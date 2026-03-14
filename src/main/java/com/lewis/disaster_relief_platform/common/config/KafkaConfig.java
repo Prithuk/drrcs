@@ -8,8 +8,6 @@ import org.springframework.kafka.config.TopicBuilder;
 
 @Configuration
 public class KafkaConfig {
-
-
     public static final String EMERGENCY_TOPIC = "emergency-requests";
     public static final String RESOURCE_TOPIC = "resource-allocations";
     public static final String NOTIFICATION_TOPIC = "notifications";

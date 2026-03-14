@@ -5,6 +5,7 @@ import com.lewis.disaster_relief_platform.common.exception.BusinessException;
 import com.lewis.disaster_relief_platform.common.exception.ResourceNotFoundException;
 import com.lewis.disaster_relief_platform.emergency.dto.request.EmergencyRequest;
 import com.lewis.disaster_relief_platform.emergency.dto.response.EmergencyResponse;
+import com.lewis.disaster_relief_platform.emergency.kafka.EmergencyEventPublisher;
 import com.lewis.disaster_relief_platform.emergency.model.Emergency;
 import com.lewis.disaster_relief_platform.emergency.model.Location;
 import com.lewis.disaster_relief_platform.emergency.model.Status;
@@ -31,11 +32,8 @@ public class EmergencyService {
         log.info("Creating new emergency: {}", request.getTitle());
         validateEmergencyRequest(request);
         Location location = Location.builder().lalitude(request.getLocation().getLatitude()).longitude(request.getLocation().getLongitude()).address(request.getLocation().getAddress()).city(request.getLocation().getCity()).state(request.getLocation().getState()).zipCode(request.getLocation().getZipCode()).country(request.getLocation().getCountry()).build();
-
         Emergency emergency = Emergency.builder().title(request.getTitle()).description(request.getDescription()).type(request.getType()).priority(request.getPriority()).status(Status.PENDING).location(location).reportedBy(request.getReportedBy()).contactPhone(request.getContactPhone()).contactEmail(request.getContactEmail()).affectedPeople(request.getAffectedPeople()).createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
-
         log.info("FROM SERVICE: ", emergency);
-
         Emergency savedEmergency = emergencyRepository.save(emergency);
         emergencyEventPublisher.publishEmergencyCreated(savedEmergency);
         log.info("Emergency saved with ID: {}", savedEmergency.getId());

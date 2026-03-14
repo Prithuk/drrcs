@@ -1,4 +1,4 @@
-package com.lewis.disaster_relief_platform.emergency.service;
+package com.lewis.disaster_relief_platform.emergency.kafka;
 
 
 import com.lewis.disaster_relief_platform.common.config.KafkaConfig;
@@ -14,10 +14,8 @@ import java.time.LocalDateTime;
 @Slf4j
 @RequiredArgsConstructor
 public class EmergencyEventPublisher {
-
     private final KafkaTemplate<String, String> kafkaTemplate;
-
-
+    
     public void publishEmergencyCreated(Emergency emergency) {
         String emergencyCreated = buildEventMessage("EMERGENCY_CREATED", emergency);
         send(emergency.getId(), emergencyCreated);
