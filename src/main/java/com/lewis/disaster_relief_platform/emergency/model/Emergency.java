@@ -1,3 +1,11 @@
+/*
+ * Copyright (c) 2026 Prithu Kathet
+ * GitHub: https://github.com/prithuk
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ */
+
 package com.lewis.disaster_relief_platform.emergency.model;
 
 
@@ -24,6 +32,9 @@ public class Emergency {
     @Id
     private String id;
 
+    @Indexed(unique = true)
+    private String trackingCode;  // ← NEW: e.g., "DIS-2024-A7B3C8F1"
+
     @Indexed
     private String title;
 
@@ -42,6 +53,9 @@ public class Emergency {
 
     private String reportedBy;
 
+    @Indexed
+    private String reportedByEmail;  // ← NEW: For linking to user accounts
+
     private String contactPhone;
 
     private String contactEmail;
@@ -49,6 +63,9 @@ public class Emergency {
     private Integer affectedPeople;
 
     private List<String> requiredResources;
+
+    @Indexed
+    private String createdByUserId;  // ← NEW: NULL if public, User ID if logged in
 
     private String assignedVolunteerId;
 

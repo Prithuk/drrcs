@@ -1,10 +1,19 @@
+/*
+ * Copyright (c) 2026 Prithu Kathet
+ * GitHub: https://github.com/prithuk
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ */
+
 package com.lewis.disaster_relief_platform.emergency.service;
 
 import com.lewis.disaster_relief_platform.common.dto.EmergencyFilterRequest;
-import com.lewis.disaster_relief_platform.common.exception.BusinessException;
-import com.lewis.disaster_relief_platform.common.exception.ResourceNotFoundException;
+import com.lewis.disaster_relief_platform.common.exception.domain.BusinessException;
+import com.lewis.disaster_relief_platform.common.exception.domain.ResourceNotFoundException;
 import com.lewis.disaster_relief_platform.emergency.dto.request.EmergencyRequest;
 import com.lewis.disaster_relief_platform.emergency.dto.response.EmergencyResponse;
+import com.lewis.disaster_relief_platform.emergency.dto.response.EmergencyTrackingResponse;
 import com.lewis.disaster_relief_platform.emergency.kafka.EmergencyEventPublisher;
 import com.lewis.disaster_relief_platform.emergency.model.Emergency;
 import com.lewis.disaster_relief_platform.emergency.model.Location;
@@ -14,10 +23,15 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 @Service
@@ -25,20 +39,71 @@ import java.time.LocalDateTime;
 public class EmergencyService {
     private final EmergencyRepository emergencyRepository;
     private final EmergencyEventPublisher emergencyEventPublisher;
-    // going to do call emergencyREPO,
+
 
     @Transactional
     public EmergencyResponse CreateEmergency(EmergencyRequest request) {
         log.info("Creating new emergency: {}", request.getTitle());
         validateEmergencyRequest(request);
+        String currentUserId = getCurrentUserId();
+        boolean isAuthenticated = currentUserId != null;
+
+        String trackingCode = generateTrackingCode();
+        Status initialStatus = isAuthenticated ? Status.PENDING : Status.PENDING_VERIFICATION;
+
         Location location = Location.builder().lalitude(request.getLocation().getLatitude()).longitude(request.getLocation().getLongitude()).address(request.getLocation().getAddress()).city(request.getLocation().getCity()).state(request.getLocation().getState()).zipCode(request.getLocation().getZipCode()).country(request.getLocation().getCountry()).build();
-        Emergency emergency = Emergency.builder().title(request.getTitle()).description(request.getDescription()).type(request.getType()).priority(request.getPriority()).status(Status.PENDING).location(location).reportedBy(request.getReportedBy()).contactPhone(request.getContactPhone()).contactEmail(request.getContactEmail()).affectedPeople(request.getAffectedPeople()).createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
+
+        Emergency emergency = Emergency.builder().trackingCode(trackingCode).title(request.getTitle()).description(request.getDescription()).type(request.getType()).priority(request.getPriority()).status(initialStatus).location(location).reportedBy(request.getReportedBy()).reportedByEmail(request.getContactEmail()).contactPhone(request.getContactPhone()).contactEmail(request.getContactEmail()).affectedPeople(request.getAffectedPeople()).requiredResources(request.getRequiredResources()).createdByUserId(currentUserId)  // NULL if public
+                .createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).build();
+
+
         log.info("FROM SERVICE: ", emergency);
         Emergency savedEmergency = emergencyRepository.save(emergency);
+
+        // TODO: Send tracking code via email
+        // emailService.sendTrackingCode(request.getContactEmail(), trackingCode);
+
         emergencyEventPublisher.publishEmergencyCreated(savedEmergency);
         log.info("Emergency saved with ID: {}", savedEmergency.getId());
         return EmergencyResponse.fromEntity(savedEmergency);
     }
+
+
+    public EmergencyTrackingResponse trackByCode(String trackingCode) {
+        log.info("Tracking emergency with code: {}", trackingCode);
+
+        Emergency emergency = emergencyRepository.findByTrackingCode(trackingCode).orElseThrow(() -> new ResourceNotFoundException("Emergency", "trackingCode", trackingCode));
+        return EmergencyTrackingResponse.fromEntity(emergency);
+    }
+
+    public Page<EmergencyResponse> getMyEmergencies(Pageable pageable) {
+        String userId = getCurrentUserId();
+        if (userId == null) {
+            throw new BusinessException("User must be authenticated to view their emergencies");
+        }
+        log.info("Fetching emergencies for user: {}", userId);
+        Page<Emergency> emergencies = emergencyRepository.findByCreatedByUserId(userId, pageable);
+        return emergencies.map(EmergencyResponse::fromEntity);
+    }
+
+
+    public void linkEmergenciesToUser(String userId, String email) {
+        log.info("Linking emergencies to user {} with email {}", userId, email);
+        List<Emergency> unlinkedEmergencies = emergencyRepository.findByReportedByEmailAndCreatedByUserIdIsNull(email);
+
+        if (unlinkedEmergencies.isEmpty()) {
+            log.info("No unlinked emergencies found for email: {}", email);
+            return;
+        }
+
+        for (Emergency emergency : unlinkedEmergencies) {
+            emergency.setCreatedByUserId(userId);
+            emergency.setStatus(Status.PENDING);  // Upgrade from PENDING_VERIFICATION
+            emergencyRepository.save(emergency);
+        }
+        log.info("Linked {} emergencies to user {}", unlinkedEmergencies.size(), userId);
+    }
+
 
     public Page<EmergencyResponse> getAllEmergencies(Pageable pageable) {
         log.info("Fetching emergencies - Page: {}, Size: {}", pageable.getPageNumber(), pageable.getPageSize());
@@ -162,5 +227,24 @@ public class EmergencyService {
         }
     }
 
+    private String generateTrackingCode() {
+        String prefix = "Prithu-" + LocalDate.now().getYear() + "-";
+        String randomPart = UUID.randomUUID().toString().replace("-", "").substring(0, 8).toUpperCase();
+        return prefix + randomPart;
+    }
+
+    private String getCurrentUserId() {
+        try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            if (authentication == null || !authentication.isAuthenticated() || "anonymousUser".equals(authentication.getPrincipal())) {
+                return null;
+            }
+            return authentication.getName();
+
+        } catch (Exception e) {
+            log.debug("No authenticated user found");
+            return null;
+        }
+    }
 
 }

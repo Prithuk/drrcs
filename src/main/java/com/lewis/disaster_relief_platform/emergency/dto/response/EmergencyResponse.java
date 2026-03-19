@@ -1,3 +1,11 @@
+/*
+ * Copyright (c) 2026 Prithu Kathet
+ * GitHub: https://github.com/prithuk
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ */
+
 package com.lewis.disaster_relief_platform.emergency.dto.response;
 
 import com.lewis.disaster_relief_platform.emergency.model.*;
@@ -15,6 +23,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class EmergencyResponse {
     private String id;
+    private String trackingCode;
     private String title;
     private String description;
     private EmergencyType type;
@@ -25,6 +34,7 @@ public class EmergencyResponse {
     private String contactPhone;
     private String contactEmail;
     private Integer affectedPeople;
+    private String createdByUserId;  // ← ADD THIS (null if public)
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
@@ -33,7 +43,8 @@ public class EmergencyResponse {
     public static EmergencyResponse fromEntity(Emergency emergency) {
         return EmergencyResponse.builder().
                 id(emergency.getId()).
-                title(emergency.getTitle())
+                trackingCode(emergency.getTrackingCode())
+                .title(emergency.getTitle())
                 .description(emergency.getDescription())
                 .type(emergency.getType())
                 .priority(emergency.getPriority())
@@ -43,6 +54,7 @@ public class EmergencyResponse {
                 .contactPhone(emergency.getContactPhone())
                 .contactEmail(emergency.getContactEmail())
                 .affectedPeople(emergency.getAffectedPeople())
+                .createdByUserId(emergency.getCreatedByUserId())
                 .createdAt(emergency.getCreatedAt())
                 .updatedAt(emergency.getUpdatedAt())
                 .build();

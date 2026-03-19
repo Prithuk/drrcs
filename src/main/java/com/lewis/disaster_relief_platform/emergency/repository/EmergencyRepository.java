@@ -1,3 +1,11 @@
+/*
+ * Copyright (c) 2026 Prithu Kathet
+ * GitHub: https://github.com/prithuk
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ */
+
 package com.lewis.disaster_relief_platform.emergency.repository;
 
 import com.lewis.disaster_relief_platform.emergency.model.Emergency;
@@ -12,9 +20,18 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface EmergencyRepository extends MongoRepository<Emergency, String> {
+    // ============= TRACKING QUERIES =============
+    Optional<Emergency> findByTrackingCode(String trackingCode);
+
+    // Find emergencies created by a specific user
+    Page<Emergency> findByCreatedByUserId(String userId, Pageable pageable);
+
+    // Find emergencies by email that haven't been linked to a user yet
+    List<Emergency> findByReportedByEmailAndCreatedByUserIdIsNull(String email);
 
     Page<Emergency> findByStatus(Status status, Pageable pageable);
 
