@@ -11,11 +11,16 @@ const VolunteerRequestsPage = () => {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('all');
 
-  useEffect(() => {
+  const loadRequests = () => {
+    setLoading(true);
     api.getRequests().then(data => {
       setRequests(data.filter(r => r.status === 'pending' || r.status === 'assigned'));
       setLoading(false);
     }).catch(() => setLoading(false));
+  };
+
+  useEffect(() => {
+    loadRequests();
   }, []);
 
   const filtered = filter === 'all' ? requests : requests.filter(r => r.priority === filter);
@@ -32,7 +37,7 @@ const VolunteerRequestsPage = () => {
     <div className="vol-requests-page">
       <div className="vol-req-header">
         <h1>Available Requests</h1>
-        <p>Browse open emergency requests you can claim</p>
+        <p>Browse open emergency requests that are waiting for admin assignment</p>
       </div>
 
       {/* Priority filter */}
@@ -81,9 +86,7 @@ const VolunteerRequestsPage = () => {
                 <p className="vol-req-location">📍 {req.location?.address}</p>
                 <div className="vol-req-footer">
                   <span className="vol-req-contact">Contact: {req.contactName}</span>
-                  <button className="btn btn-primary btn-sm" onClick={() => alert(`Claiming request ${req.id}`)}>
-                    Claim Request
-                  </button>
+                  <span className="vol-req-contact">Assignment is managed by admins.</span>
                 </div>
               </div>
             </Card.Body>

@@ -1,13 +1,31 @@
-﻿import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+﻿import React, { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
+import { getRoleLabel } from '../../lib/permissions';
 import ThemeToggle from '../common/ThemeToggle';
+import { getUnreadNotificationCount, notificationEvents } from '../../services/notificationService';
 import './Navbar.css';
 
 export const Navbar = ({ onMenuToggle }) => {
   const { user, logout } = useAuth();
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const [unreadNotifications, setUnreadNotifications] = useState(0);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const syncCount = () => {
+      setUnreadNotifications(getUnreadNotificationCount(user));
+    };
+
+    syncCount();
+    window.addEventListener('storage', syncCount);
+    window.addEventListener(notificationEvents.updated, syncCount);
+
+    return () => {
+      window.removeEventListener('storage', syncCount);
+      window.removeEventListener(notificationEvents.updated, syncCount);
+    };
+  }, [user]);
 
   const handleLogout = async () => {
     await logout();
@@ -28,9 +46,9 @@ export const Navbar = ({ onMenuToggle }) => {
         </button>
 
         {/* Logo/Brand */}
-        <div className="navbar-brand">
+        <Link to="/" className="navbar-brand" aria-label="Go to home page">
           <h1>DRRCS</h1>
-        </div>
+        </Link>
 
         {/* Right Side - User Menu */}
         <div className="navbar-actions">
@@ -58,7 +76,9 @@ export const Navbar = ({ onMenuToggle }) => {
                 <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
                 <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
               </svg>
-              <span className="notification-badge">3</span>
+              {unreadNotifications > 0 && (
+                <span className="notification-badge">{unreadNotifications}</span>
+              )}
             </button>
           </div>
 
@@ -84,7 +104,7 @@ export const Navbar = ({ onMenuToggle }) => {
                     <div>
                       <div className="user-name-full">{user?.fullName}</div>
                       <div className="user-email">{user?.email}</div>
-                      <div className="user-role">{user?.role}</div>
+                      <div className="user-role">{getRoleLabel(user?.role)}</div>
                     </div>
                   </div>
                 </div>

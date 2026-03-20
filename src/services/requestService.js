@@ -4,8 +4,13 @@
  */
 
 import { api } from '../lib/api';
+import { createRequestSubmittedNotification } from './notificationService';
 
 const REQUEST_FORM_PAYLOADS_KEY = 'drrcs_request_form_payloads';
+const TRACKING_INDEX_KEY = 'drrcs_tracking_index';
+const REQUESTS_STORAGE_KEY = 'drrcs_requests_store';
+
+const normalizePhone = (value) => (value || '').trim().replace(/\D/g, '');
 
 const saveRequestFormPayload = (requestId, requestData) => {
   try {
@@ -19,6 +24,32 @@ const saveRequestFormPayload = (requestId, requestData) => {
   } catch {
     // Ignore payload persistence failures in mock mode
   }
+};
+
+/**
+ * Save a mapping so users can look up a request by its ID, email, or phone.
+ */
+const saveTrackingIndex = (requestId, email, phone) => {
+  try {
+    const existing = localStorage.getItem(TRACKING_INDEX_KEY);
+    const index = existing ? JSON.parse(existing) : {};
+    const normalizedEmail = email?.trim().toLowerCase() || null;
+    const normalizedPhone = phone?.trim().replace(/\D/g, '') || null;
+
+    // Store full info keyed by requestId
+    index[requestId] = {
+      requestId,
+      email: normalizedEmail,
+      phone: normalizedPhone,
+      submittedAt: new Date().toISOString(),
+    };
+
+    // Reverse lookup by email and phone
+    if (normalizedEmail) index[normalizedEmail] = requestId;
+    if (normalizedPhone) index[normalizedPhone] = requestId;
+
+    localStorage.setItem(TRACKING_INDEX_KEY, JSON.stringify(index));
+  } catch { /* ignore */ }
 };
 
 /**
@@ -75,6 +106,12 @@ export const submitRequest = async (requestData) => {
     });
 
     saveRequestFormPayload(createdRequest.id, requestData);
+    saveTrackingIndex(
+      createdRequest.id,
+      requestData.contact?.primaryEmail,
+      requestData.contact?.primaryPhone
+    );
+    createRequestSubmittedNotification(createdRequest);
 
     return {
       success: true,
@@ -95,6 +132,88 @@ export const submitRequest = async (requestData) => {
       message: 'Failed to submit request',
       error: error?.message || String(error)
     };
+  }
+};
+
+/**
+ * Look up a request by tracking ID, email, or phone number.
+ * Available publicly — no authentication required.
+ *
+ * @param {string} query - Request ID, email address, or phone number
+ */
+export const trackRequest = async (query) => {
+  const trimmed = (query || '').trim();
+  if (!trimmed) {
+    return { success: false, message: 'Please enter a tracking ID, email, or phone number.' };
+  }
+
+  try {
+    const indexData = localStorage.getItem(TRACKING_INDEX_KEY);
+    const index = indexData ? JSON.parse(indexData) : {};
+
+    // Resolve request ID from the query
+    let requestId = trimmed;
+    const normalizedQuery = trimmed.toLowerCase();
+    const digitsOnly = normalizePhone(trimmed);
+
+    if (index[trimmed]) {
+      const val = index[trimmed];
+      requestId = typeof val === 'string' ? val : val.requestId;
+    } else if (index[normalizedQuery]) {
+      const val = index[normalizedQuery];
+      requestId = typeof val === 'string' ? val : val.requestId;
+    } else if (digitsOnly && index[digitsOnly]) {
+      const val = index[digitsOnly];
+      requestId = typeof val === 'string' ? val : val.requestId;
+    }
+
+    // Try to get the stored payload
+    const payloadData = localStorage.getItem(REQUEST_FORM_PAYLOADS_KEY);
+    const payloads = payloadData ? JSON.parse(payloadData) : {};
+    const payload = payloads[requestId];
+
+    // Try the same request store used by the dashboard/api mock layer
+    const apiData = localStorage.getItem(REQUESTS_STORAGE_KEY);
+    const apiRequests = apiData ? JSON.parse(apiData) : [];
+    const apiRequest = apiRequests.find((request) => {
+      const requestIdMatches = request.id === requestId || request.id?.toLowerCase() === normalizedQuery;
+      const requestPhoneMatches = normalizePhone(request.contactPhone) && normalizePhone(request.contactPhone) === digitsOnly;
+      return requestIdMatches || requestPhoneMatches;
+    });
+
+    // If index lookup failed, allow direct request-id search against stored requests and payloads.
+    const resolvedRequestId = apiRequest?.id || payload?.requestId || requestId;
+
+    if (!payload && !apiRequest) {
+      return {
+        success: false,
+        message:
+          'No request found with that information. Please double-check your tracking ID, email, or phone number.',
+      };
+    }
+
+    return {
+      success: true,
+      request: {
+        id: resolvedRequestId,
+        status: apiRequest?.status || 'pending',
+        priority: apiRequest?.priority || payload?.priority || 'medium',
+        disasterType: apiRequest?.disasterType || payload?.disasterType || 'unknown',
+        location:
+          apiRequest?.location?.address ||
+          [payload?.location?.city, payload?.location?.state].filter(Boolean).join(', ') ||
+          'Not specified',
+        contactName:
+          apiRequest?.contactName || payload?.contact?.primaryName || 'N/A',
+        assignedTo: apiRequest?.assignedTo || null,
+        submittedAt: apiRequest?.timestamp || payload?.savedAt || null,
+        updatedAt: apiRequest?.updatedAt || null,
+        description: apiRequest?.description || payload?.description || '',
+        notes: apiRequest?.notes || payload?.title || '',
+      },
+    };
+  } catch {
+    return { success: false, message: 'Failed to retrieve request. Please try again.' };
   }
 };
 

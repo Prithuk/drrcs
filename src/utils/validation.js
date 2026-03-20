@@ -173,10 +173,6 @@ export const validateRegistrationForm = (data) => {
     errors.confirmPassword = matchValidation.error;
   }
 
-  if (!data.role) {
-    errors.role = 'Please select a role';
-  }
-
   if (!data.termsAccepted) {
     errors.termsAccepted = 'You must accept the terms and conditions';
   }

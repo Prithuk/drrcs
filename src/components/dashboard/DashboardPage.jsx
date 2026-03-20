@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { api } from '../../lib/api';
+import { useAuth } from '../../hooks/useAuth';
+import { getNotifications, notificationEvents } from '../../services/notificationService';
 import Card from '../common/Card';
 import { Badge } from '../common/Badge';
 import { TrendingUp, FileText, Clock, AlertCircle, ArrowRight, Flame, Droplets, Wind, CheckCircle } from 'lucide-react';
@@ -24,14 +26,31 @@ import {
 import './DashboardPage.css';
 
 export const DashboardPage = () => {
+  const { user } = useAuth();
   const [stats, setStats] = useState(null);
   const [recentRequests, setRecentRequests] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [requests, setRequests] = useState([]);
+  const [recentNotifications, setRecentNotifications] = useState([]);
 
   useEffect(() => {
     loadData();
   }, []);
+
+  useEffect(() => {
+    const syncNotifications = () => {
+      setRecentNotifications(getNotifications(user).slice(0, 5));
+    };
+
+    syncNotifications();
+    window.addEventListener('storage', syncNotifications);
+    window.addEventListener(notificationEvents.updated, syncNotifications);
+
+    return () => {
+      window.removeEventListener('storage', syncNotifications);
+      window.removeEventListener(notificationEvents.updated, syncNotifications);
+    };
+  }, [user]);
 
   const loadData = async () => {
     try {
@@ -229,6 +248,40 @@ export const DashboardPage = () => {
       </div>
 
       {/* Recent Requests */}
+      <Card elevation="default">
+        <Card.Header>
+          <div className="card-header-row">
+            <h3>Latest Notifications</h3>
+            <Link className="btn-link" to="/notifications">View All</Link>
+          </div>
+        </Card.Header>
+        <Card.Body>
+          <div className="space-y-4">
+            {recentNotifications.length === 0 && (
+              <div className="request-item">
+                <p className="request-description">No notifications yet. New emergency submissions will show up here.</p>
+              </div>
+            )}
+            {recentNotifications.map((notification) => (
+              <div key={notification.id} className="request-item">
+                <div className="request-item-header">
+                  <span className="request-id">{notification.requestId || 'Notice'}</span>
+                  {!notification.read && <Badge variant="warning">new</Badge>}
+                </div>
+                <p className="request-description">{notification.title}</p>
+                <p className="request-location">{notification.body}</p>
+                <div className="request-item-footer">
+                  <span className="request-contact">{new Date(notification.createdAt).toLocaleString()}</span>
+                  {notification.actionPath && (
+                    <Link className="btn-outline-sm" to={notification.actionPath}>Open</Link>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </Card.Body>
+      </Card>
+
       <Card elevation="default">
         <Card.Header>
           <div className="card-header-row">

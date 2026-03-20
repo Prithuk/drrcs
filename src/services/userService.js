@@ -72,6 +72,33 @@ const mockUsers = [
     lastLogin: null,
     createdAt: '2026-02-27T08:00:00Z',
   },
+  {
+    id: '4',
+    fullName: 'Admin Demo',
+    email: 'admin@drrcs.test',
+    role: 'admin',
+    status: 'active',
+    lastLogin: null,
+    createdAt: '2026-03-01T08:00:00Z',
+  },
+  {
+    id: '5',
+    fullName: 'Volunteer Demo',
+    email: 'volunteer@drrcs.test',
+    role: 'volunteer',
+    status: 'active',
+    lastLogin: null,
+    createdAt: '2026-03-01T08:00:00Z',
+  },
+  {
+    id: '6',
+    fullName: 'Organization Demo',
+    email: 'org@drrcs.test',
+    role: 'organization_staff',
+    status: 'active',
+    lastLogin: null,
+    createdAt: '2026-03-01T08:00:00Z',
+  },
 ];
 
 const delay = (ms = 200) => new Promise(resolve => setTimeout(resolve, ms));

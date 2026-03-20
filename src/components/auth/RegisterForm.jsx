@@ -35,7 +35,6 @@ const RegisterForm = ({ onSuccess, onNavigateToLogin }) => {
     email: '',
     password: '',
     confirmPassword: '',
-    role: '',
     termsAccepted: false,
   });
 
@@ -90,7 +89,8 @@ const RegisterForm = ({ onSuccess, onNavigateToLogin }) => {
     setErrors({});
 
     // Attempt registration
-    const result = await register(formData.fullName, formData.email, formData.password, formData.role);
+    // Role is always 'volunteer' on self-registration; pass empty string – server sets volunteer
+    const result = await register(formData.fullName, formData.email, formData.password, 'volunteer');
 
     if (!result.success) {
       setSubmittedError(result.message);
@@ -217,29 +217,15 @@ const RegisterForm = ({ onSuccess, onNavigateToLogin }) => {
         )}
       </div>
 
-      {/* Role Selection */}
+      {/* Role Info */}
       <div className="form-group">
-        <label htmlFor="role">Role *</label>
-        <select
-          id="role"
-          name="role"
-          value={formData.role}
-          onChange={handleInputChange}
-          className={errors.role ? 'input-error' : ''}
-          disabled={loading}
-          aria-invalid={!!errors.role}
-          aria-describedby={errors.role ? 'role-error' : undefined}
-        >
-          <option value="">-- Select your role --</option>
-          <option value="volunteer">Volunteer</option>
-          <option value="organization_staff">Organization Staff</option>
-          <option value="admin">Administrator (Request Invite)</option>
-        </select>
-        {errors.role && (
-          <span className="error-message" id="role-error">
-            {errors.role}
-          </span>
-        )}
+        <div className="alert" style={{ background: 'var(--color-muted, #f1f5f9)', border: '1px solid var(--color-border, #e2e8f0)', borderRadius: 8, padding: '0.75rem 1rem', fontSize: '0.88rem', color: 'var(--color-muted-foreground, #64748b)' }}>
+          <strong>Starting role: Volunteer</strong>
+          <br />
+          All new accounts start as <em>Volunteer</em>. To request a higher role
+          (Coordinator or Organization Staff), use the <strong>Role Upgrade</strong> option
+          in your profile after signing in — an admin will review and approve it.
+        </div>
       </div>
 
       {/* Terms & Conditions Checkbox */}

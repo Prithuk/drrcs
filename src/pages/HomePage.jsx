@@ -40,6 +40,8 @@ const HomePage = () => {
 
           <nav className="public-nav" aria-label="Public navigation">
             <Link to="/" className="public-nav-link public-nav-link-active">Home</Link>
+            <Link to="/live-activity" className="public-nav-link">Live Activity</Link>
+            <Link to="/track" className="public-nav-link">Track Request</Link>
             {futureNavItems.map((item) => (
               <button
                 key={item}
@@ -79,6 +81,12 @@ const HomePage = () => {
             <nav className="public-mobile-nav" aria-label="Mobile navigation">
               <Link to="/" className="public-nav-link public-nav-link-active" onClick={() => setMobileMenuOpen(false)}>
                 Home
+              </Link>
+              <Link to="/live-activity" className="public-nav-link" onClick={() => setMobileMenuOpen(false)}>
+                Live Activity
+              </Link>
+              <Link to="/track" className="public-nav-link" onClick={() => setMobileMenuOpen(false)}>
+                Track Request
               </Link>
               {futureNavItems.map((item) => (
                 <button
@@ -120,6 +128,10 @@ const HomePage = () => {
                 <Link to="/submit-emergency-request" className="hero-btn hero-btn-primary">
                   <AlertCircle size={16} />
                   Submit Emergency Request
+                </Link>
+                <Link to="/track" className="hero-btn hero-btn-secondary">
+                  <Clock size={16} />
+                  Track Request
                 </Link>
                 <Link to="/live-activity" className="hero-btn hero-btn-secondary hero-btn-alert">
                   Live Activity
@@ -291,7 +303,7 @@ const HomePage = () => {
         <div className="public-footer-content">
           <div className="public-footer-grid">
             <section className="public-footer-about">
-              <div className="public-footer-brand">
+              <Link to="/" className="public-footer-brand" aria-label="Go to home page">
                 <span className="public-brand-icon public-footer-brand-icon" aria-hidden="true">
                   <Shield size={18} />
                 </span>
@@ -299,7 +311,7 @@ const HomePage = () => {
                   <h3>DRRCS</h3>
                   <p>Relief &amp; Response</p>
                 </div>
-              </div>
+              </Link>
               <p>
                 Dedicated to rapid and effective disaster response support for communities in need.
               </p>
@@ -309,6 +321,8 @@ const HomePage = () => {
               <h4>Quick Links</h4>
               <ul className="public-footer-links">
                 <li><Link to="/">Home</Link></li>
+                <li><Link to="/live-activity">Live Activity</Link></li>
+                <li><Link to="/track">Track Request</Link></li>
                 <li><button type="button" className="public-footer-link-disabled" aria-disabled="true" title="Coming soon">About</button></li>
                 <li><button type="button" className="public-footer-link-disabled" aria-disabled="true" title="Coming soon">Services</button></li>
                 <li><button type="button" className="public-footer-link-disabled" aria-disabled="true" title="Coming soon">Contact</button></li>

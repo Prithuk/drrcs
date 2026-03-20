@@ -175,15 +175,9 @@ export const registerUser = async (fullName, email, password, role) => {
     }
 
     // Validate role
-    const validRoles = ['admin', 'volunteer', 'organization_staff'];
-    if (!validRoles.includes(role)) {
-      return {
-        success: false,
-        token: null,
-        user: null,
-        message: 'Invalid role selected',
-      };
-    }
+    // All new self-registered users start as volunteer.
+    // Coordinator / organization_staff require admin approval via a role upgrade request.
+    const assignedRole = 'volunteer';
 
     // Create new user (in real app, backend would create this)
     const newUser = {
@@ -191,7 +185,7 @@ export const registerUser = async (fullName, email, password, role) => {
       fullName,
       email: email.toLowerCase(),
       password, // Never store plain text in real app!
-      role,
+      role: assignedRole,
     };
 
     // Add to mock database

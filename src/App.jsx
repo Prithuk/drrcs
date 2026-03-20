@@ -1,5 +1,5 @@
-import React from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
 import { useAuth } from './hooks/useAuth';
@@ -23,15 +23,41 @@ import TeamPage from './components/dashboard/TeamPage';
 import OrgSettingsPage from './components/dashboard/OrgSettingsPage';
 import RequestSubmissionPage from './pages/RequestSubmissionPage';
 import RequestDetailPage from './pages/RequestDetailPage';
+import RequestTrackingPage from './pages/RequestTrackingPage';
 import HomePage from './pages/HomePage';
 import LiveActivityPage from './pages/LiveActivityPage';
+import { getDefaultRouteForRole, hasRequiredRole } from './lib/permissions';
 import './App.css';
 
 // Protect routes - redirect to login if not authenticated
-const ProtectedRoute = ({ children }) => {
-  const { isAuthenticated, loading } = useAuth();
+const ProtectedRoute = ({ children, allowedRoles = [] }) => {
+  const { isAuthenticated, loading, user } = useAuth();
   if (loading) return null;
-  return isAuthenticated ? children : <Navigate to="/login" replace />;
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+
+  if (!hasRequiredRole(user, allowedRoles)) {
+    return <Navigate to={getDefaultRouteForRole(user)} replace />;
+  }
+
+  return children;
+};
+
+const ScrollToTop = () => {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+
+    // Dashboard pages can scroll inside this container instead of the window.
+    const mainContent = document.querySelector('.main-content');
+    if (mainContent) {
+      mainContent.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+    }
+  }, [pathname]);
+
+  return null;
 };
 
 function AppRouter() {
@@ -43,6 +69,7 @@ function AppRouter() {
       <Route path="/" element={<HomePage />} />
       <Route path="/live-activity" element={<LiveActivityPage />} />
       <Route path="/submit-emergency-request" element={<RequestSubmissionPage />} />
+      <Route path="/track" element={<RequestTrackingPage />} />
       <Route
         path="/login"
         element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <LoginPage />}
@@ -89,7 +116,7 @@ function AppRouter() {
       <Route
         path="/users"
         element={
-          <ProtectedRoute>
+          <ProtectedRoute allowedRoles={['admin']}>
             <MainLayout>
               <UsersPage />
             </MainLayout>
@@ -101,7 +128,7 @@ function AppRouter() {
       <Route
         path="/admin/requests"
         element={
-          <ProtectedRoute>
+          <ProtectedRoute allowedRoles={['admin']}>
             <MainLayout>
               <RequestListPage />
             </MainLayout>
@@ -111,7 +138,7 @@ function AppRouter() {
       <Route
         path="/requests/:id"
         element={
-          <ProtectedRoute>
+          <ProtectedRoute allowedRoles={['admin', 'organization_staff', 'volunteer']}>
             <MainLayout>
               <RequestDetailPage />
             </MainLayout>
@@ -121,7 +148,7 @@ function AppRouter() {
       <Route
         path="/admin/volunteers"
         element={
-          <ProtectedRoute>
+          <ProtectedRoute allowedRoles={['admin']}>
             <MainLayout>
               <VolunteersPage />
             </MainLayout>
@@ -131,7 +158,7 @@ function AppRouter() {
       <Route
         path="/admin/analytics"
         element={
-          <ProtectedRoute>
+          <ProtectedRoute allowedRoles={['admin']}>
             <MainLayout>
               <AnalyticsPage />
             </MainLayout>
@@ -141,7 +168,7 @@ function AppRouter() {
       <Route
         path="/admin/settings"
         element={
-          <ProtectedRoute>
+          <ProtectedRoute allowedRoles={['admin']}>
             <MainLayout>
               <SettingsPage />
             </MainLayout>
@@ -153,7 +180,7 @@ function AppRouter() {
       <Route
         path="/volunteer/tasks"
         element={
-          <ProtectedRoute>
+          <ProtectedRoute allowedRoles={['volunteer']}>
             <MainLayout>
               <VolunteerTasksPage />
             </MainLayout>
@@ -163,7 +190,7 @@ function AppRouter() {
       <Route
         path="/volunteer/requests"
         element={
-          <ProtectedRoute>
+          <ProtectedRoute allowedRoles={['volunteer']}>
             <MainLayout>
               <VolunteerRequestsPage />
             </MainLayout>
@@ -173,7 +200,7 @@ function AppRouter() {
       <Route
         path="/volunteer/profile"
         element={
-          <ProtectedRoute>
+          <ProtectedRoute allowedRoles={['volunteer']}>
             <MainLayout>
               <ProfilePage />
             </MainLayout>
@@ -183,7 +210,7 @@ function AppRouter() {
       <Route
         path="/volunteer/help"
         element={
-          <ProtectedRoute>
+          <ProtectedRoute allowedRoles={['volunteer']}>
             <MainLayout>
               <HelpPage />
             </MainLayout>
@@ -194,12 +221,16 @@ function AppRouter() {
       {/* Organization staff routes */}
       <Route
         path="/org/submit-request"
-        element={<RequestSubmissionPage />}
+        element={
+          <ProtectedRoute allowedRoles={['organization_staff']}>
+            <RequestSubmissionPage />
+          </ProtectedRoute>
+        }
       />
       <Route
         path="/org/requests"
         element={
-          <ProtectedRoute>
+          <ProtectedRoute allowedRoles={['organization_staff']}>
             <MainLayout>
               <OrgRequestsPage />
             </MainLayout>
@@ -209,7 +240,7 @@ function AppRouter() {
       <Route
         path="/org/team"
         element={
-          <ProtectedRoute>
+          <ProtectedRoute allowedRoles={['organization_staff']}>
             <MainLayout>
               <TeamPage />
             </MainLayout>
@@ -219,7 +250,7 @@ function AppRouter() {
       <Route
         path="/org/settings"
         element={
-          <ProtectedRoute>
+          <ProtectedRoute allowedRoles={['organization_staff']}>
             <MainLayout>
               <OrgSettingsPage />
             </MainLayout>
@@ -240,6 +271,7 @@ function App() {
     <BrowserRouter>
       <ThemeProvider>
         <AuthProvider>
+          <ScrollToTop />
           <AppRouter />
         </AuthProvider>
       </ThemeProvider>

@@ -21,8 +21,8 @@ const RequestSubmissionPage = ({ onNavigate }) => {
 
   const handleFormSuccess = (response) => {
     setSuccessMessage(response);
-    
-    // Show success message for 3 seconds, then optionally redirect
+
+    // Optionally redirect when embedded flow provides a navigation handler
     setTimeout(() => {
       if (onNavigate) {
         onNavigate('dashboard');
@@ -52,6 +52,7 @@ const RequestSubmissionPage = ({ onNavigate }) => {
 
           <nav className="public-nav" aria-label="Public navigation">
             <Link to="/" className="public-nav-link public-nav-link-active">Home</Link>
+            <Link to="/track" className="public-nav-link">Track Request</Link>
             {futureNavItems.map((item) => (
               <button
                 key={item}
@@ -92,6 +93,9 @@ const RequestSubmissionPage = ({ onNavigate }) => {
               <Link to="/" className="public-nav-link public-nav-link-active" onClick={() => setMobileMenuOpen(false)}>
                 Home
               </Link>
+              <Link to="/track" className="public-nav-link" onClick={() => setMobileMenuOpen(false)}>
+                Track Request
+              </Link>
               {futureNavItems.map((item) => (
                 <button
                   key={`mobile-${item}`}
@@ -126,12 +130,25 @@ const RequestSubmissionPage = ({ onNavigate }) => {
             <div className="success-container">
               <div className="success-icon">✓</div>
               <h2>Request Submitted Successfully!</h2>
-              <p>Your disaster relief request has been submitted.</p>
+              <p>Thank you for submitting your emergency request.</p>
               <div className="request-id">
                 <strong>Request ID:</strong>
                 <span>{successMessage.requestId}</span>
               </div>
-              <p className="redirect-message">Redirecting to dashboard in a moment...</p>
+              <p className="redirect-message">
+                Our response team has received your submission and will review and handle it as soon as possible.
+              </p>
+              <div className="hero-actions" style={{ justifyContent: 'center', marginTop: '1rem' }}>
+                <Link
+                  to={`/track?requestId=${encodeURIComponent(successMessage.requestId)}`}
+                  className="hero-btn hero-btn-secondary"
+                >
+                  Track This Request
+                </Link>
+              </div>
+              {onNavigate && (
+                <p className="redirect-message">Taking you back to the dashboard shortly...</p>
+              )}
               <button
                 type="button"
                 className="success-close-btn"
@@ -197,7 +214,7 @@ const RequestSubmissionPage = ({ onNavigate }) => {
         <div className="public-footer-content">
           <div className="public-footer-grid">
             <section className="public-footer-about">
-              <div className="public-footer-brand">
+              <Link to="/" className="public-footer-brand" aria-label="Go to home page">
                 <span className="public-brand-icon public-footer-brand-icon" aria-hidden="true">
                   <Shield size={18} />
                 </span>
@@ -205,7 +222,7 @@ const RequestSubmissionPage = ({ onNavigate }) => {
                   <h3>DRRCS</h3>
                   <p>Relief &amp; Response</p>
                 </div>
-              </div>
+              </Link>
               <p>
                 Dedicated to rapid and effective disaster response support for communities in need.
               </p>
@@ -215,6 +232,7 @@ const RequestSubmissionPage = ({ onNavigate }) => {
               <h4>Quick Links</h4>
               <ul className="public-footer-links">
                 <li><Link to="/">Home</Link></li>
+                <li><Link to="/track">Track Request</Link></li>
                 <li><button type="button" className="public-footer-link-disabled" aria-disabled="true" title="Coming soon">About</button></li>
                 <li><button type="button" className="public-footer-link-disabled" aria-disabled="true" title="Coming soon">Services</button></li>
                 <li><button type="button" className="public-footer-link-disabled" aria-disabled="true" title="Coming soon">Contact</button></li>
