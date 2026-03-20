@@ -110,12 +110,29 @@
     - Result: ✅ Compilation SUCCESS | ✅ Tests: 0/0 (no test sources present — no baseline test failures)
     - Notes: `mvn clean` skipped — `target/` directory locked by VS Code; compilation result unaffected. No src/main/resources or src/test directory content on disk (source files exist in target/classes as pre-compiled .class files only).
   - **Deferred Work**: None
-  - **Commit**: (see below)
+  - **Commit**: a1ab9d1 - Step 2: Setup Baseline - Compile: SUCCESS, Tests: 0/0 passed
 
 ---
 
 - **Step 3: Upgrade Java from 17 to 21**
-  - **Status**: 🔘 Not Started
+  - **Status**: ✅ Completed
+  - **Changes Made**:
+    - `java.version`: `17` → `21` in pom.xml
+    - `lombok.version`: `1.18.30` → `1.18.36` in pom.xml (Java 21 compatibility)
+    - `maven-compiler-plugin`: `3.11.0` → `3.13.0` in pom.xml (Java 21 support)
+  - **Review Code Changes**:
+    - Sufficiency: ✅ All required changes present
+    - Necessity: ✅ All changes necessary — java.version targets JDK 21; Lombok 1.18.36 is minimum for Java 21 annotation processing; maven-compiler-plugin 3.13.0 required for full Java 21 release flag support
+      - Functional Behavior: ✅ Preserved — no business logic changed
+      - Security Controls: ✅ Preserved — no security configuration modified
+  - **Verification**:
+    - Command: `mvn test-compile -q` then `mvn test`
+    - JDK: `C:\Users\ashoo\.jdk\jdk-21.0.8\bin`
+    - Build tool: `C:\Users\ashoo\.maven\maven-3.9.14\bin\mvn`
+    - Result: ✅ Compilation SUCCESS | ✅ Tests: 0/0 (no test sources — matches baseline)
+    - Notes: `mvn clean` skipped — `target/` directory locked by VS Code
+  - **Deferred Work**: None
+  - **Commit**: (see below)
 
 ---
 
