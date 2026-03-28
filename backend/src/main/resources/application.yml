@@ -1,0 +1,40 @@
+spring:
+  application:
+    name: disaster-relief-platform
+
+  data:
+    mongodb:
+      host: localhost
+      database: disaster_relief
+      # username/password not needed - local MongoDB has no auth enabled
+
+
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: disaster-relief-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+
+
+server:
+  port: 8080
+
+
+jwt:
+  secret: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
+
+
+logging:
+  level:
+    com.relief: DEBUG
+    org.springframework.data.mongodb: DEBUG
+    org.springframework.kafka: INFO
+
+app:
+  kafka:
+    enabled: false
