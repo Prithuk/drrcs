@@ -22,7 +22,6 @@ const RequestSubmissionPage = ({ onNavigate }) => {
   const handleFormSuccess = (response) => {
     setSuccessMessage(response);
 
-    // Optionally redirect when embedded flow provides a navigation handler
     setTimeout(() => {
       if (onNavigate) {
         onNavigate('dashboard');
@@ -179,34 +178,34 @@ const RequestSubmissionPage = ({ onNavigate }) => {
                 />
               </div>
 
-              {/* Help/Information Panel */}
               <aside className="help-panel">
                 <Card>
                   <Card.Header>
-                    <h3>📋 Tips for Submission</h3>
+                    <h3>Submission Guidance</h3>
                   </Card.Header>
                   <Card.Body>
                     <ul>
                       <li><strong>Be Specific:</strong> Provide detailed descriptions to help responders understand your needs</li>
+                      <li><strong>Exact Address:</strong> Include the full service location so responders know where help is needed</li>
                       <li><strong>Include Details:</strong> Specify quantities and special requirements for resources</li>
                       <li><strong>Contact Information:</strong> Ensure contact details are accurate and monitored</li>
                       <li><strong>Verify Data:</strong> Double-check all information before submitting</li>
-                      <li><strong>Save Drafts:</strong> Use the Save Draft button to preserve your progress</li>
                       <li><strong>Disaster Type:</strong> Select the type of disaster accurately for proper categorization</li>
+                      <li><strong>Tracking Code:</strong> Keep the tracking code after submission so you can check request status later</li>
                     </ul>
                   </Card.Body>
                 </Card>
 
                 <Card>
                   <Card.Header>
-                    <h3>❓ Need Help?</h3>
+                    <h3>Need Help?</h3>
                   </Card.Header>
                   <Card.Body>
-                    <p>If you have questions about the submission process:</p>
+                    <p>For assistance with submitting a request:</p>
                     <ul>
-                      <li>📞 Call our support team: 1-800-HELP-NOW</li>
-                      <li>📧 Email: support@drrcs.org</li>
-                      <li>💬 Live chat available 24/7</li>
+                      <li>Call our support team: 1-800-HELP-NOW</li>
+                      <li>Email: support@drrcs.org</li>
+                      <li>Live chat is available 24/7</li>
                     </ul>
                   </Card.Body>
                 </Card>
