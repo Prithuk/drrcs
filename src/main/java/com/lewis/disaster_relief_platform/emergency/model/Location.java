@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Location {
-    private Double lalitude;
+    private Double latitude;
     private Double longitude;
     private String address;
     private String city;

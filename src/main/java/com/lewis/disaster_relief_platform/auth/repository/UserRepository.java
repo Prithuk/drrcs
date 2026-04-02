@@ -8,6 +8,7 @@
 
 package com.lewis.disaster_relief_platform.auth.repository;
 
+import com.lewis.disaster_relief_platform.auth.model.Role;
 import com.lewis.disaster_relief_platform.auth.model.User;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
@@ -24,5 +25,7 @@ public interface UserRepository extends MongoRepository<User, String> {
     boolean existsByUsername(String username);
 
     boolean existsByEmail(String email);
+
+    boolean existsByRoleContains(Role role);
 
 }

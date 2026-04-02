@@ -29,6 +29,9 @@ public class EmergencyRequest {
     @NotNull(message = "Emergency type is required")
     private EmergencyType type;
 
+    @NotBlank(message = "Disaster type is required")
+    private String disasterType;
+
     @NotNull(message = "Priority is required")
     private Priority priority;
 
@@ -39,7 +42,7 @@ public class EmergencyRequest {
     @Size(min = 2, max = 100, message = "Reporter name must be between 2 and 100 characters")
     private String reportedBy;
 
-    @Pattern(regexp = "^[0-9]{10}$", message = "Contact phone must be 10 digits")
+    @Pattern(regexp = "^[0-9]{7,15}$", message = "Contact phone must be 7-15 digits")
     private String contactPhone;
 
     @Email(message = "Invalid email format")

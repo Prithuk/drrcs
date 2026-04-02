@@ -26,7 +26,8 @@ public class AuthResponse {
     private String type = "Bearer";
     private String userId;
     private String username;
+    private String fullName;
     private String email;
     private Set<Role> role;
-    private long expiresIn;  // milliseconds
+    private long expiresIn; // milliseconds
 }

@@ -8,7 +8,6 @@
 
 package com.lewis.disaster_relief_platform.auth.service;
 
-
 import com.lewis.disaster_relief_platform.auth.config.constant.SecurityConstant;
 import com.lewis.disaster_relief_platform.auth.config.token.JWTUtil;
 import com.lewis.disaster_relief_platform.auth.dto.request.RegisterRequest;
@@ -38,7 +37,7 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JWTUtil jwtUtil;
-    private final EmergencyService emergencyService;  // ← NEW DEPENDENCY
+    private final EmergencyService emergencyService; // ← NEW DEPENDENCY
 
     @Transactional
     public AuthResponse register(RegisterRequest registerRequest) {
@@ -69,15 +68,15 @@ public class AuthService {
         // ============= AUTO-LINK EMERGENCIES =============
         emergencyService.linkEmergenciesToUser(savedUser.getId(), savedUser.getEmail());
 
-
         UserPrinciple userPrinciple = new UserPrinciple(savedUser);
-        //generate jwt token
+        // generate jwt token
         String token = jwtUtil.generateJwtToken(userPrinciple);
 
         return AuthResponse.builder()
                 .token(token)
                 .type(SecurityConstant.TOKEN_PREFIX)
                 .username(savedUser.getUsername())
+                .fullName(savedUser.getFullName())
                 .userId(savedUser.getId())
                 .email(savedUser.getEmail())
                 .role(savedUser.getRole())
@@ -85,15 +84,15 @@ public class AuthService {
                 .build();
     }
 
-
     @Transactional
     public AuthResponse login(String username) {
         log.info("Preparing login response for user: {}", username);
 
-        // 1. Fetch user from DB
+        // 1. Fetch user from DB — try username first, then email
         User user = userRepository.findByUsername(username)
+                .or(() -> userRepository.findByEmail(username))
                 .orElseThrow(() -> new InvalidCredentialsException("Invalid credentials"));
-    log.info("USER FETCHED+"+ user.getPassword());
+        log.info("USER FETCHED+" + user.getPassword());
 
         // 2. Update last login time (Beast Mode Auditing)
         user.setLastLoginAt(LocalDateTime.now());
@@ -109,10 +108,10 @@ public class AuthService {
                 .type(SecurityConstant.TOKEN_PREFIX)
                 .userId(user.getId())
                 .username(user.getUsername())
+                .fullName(user.getFullName())
                 .email(user.getEmail())
                 .role(user.getRole())
                 .expiresIn(SecurityConstant.EXPIRATION_TIME)
                 .build();
     }
 }
-

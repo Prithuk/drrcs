@@ -30,8 +30,18 @@ public interface EmergencyRepository extends MongoRepository<Emergency, String> 
     // Find emergencies created by a specific user
     Page<Emergency> findByCreatedByUserId(String userId, Pageable pageable);
 
+    Page<Emergency> findByAssignedVolunteerId(String volunteerId, Pageable pageable);
+
     // Find emergencies by email that haven't been linked to a user yet
     List<Emergency> findByReportedByEmailAndCreatedByUserIdIsNull(String email);
+
+    @Query("{'$or': [" +
+            "{'createdByUserId': ?0}, " +
+            "{'createdByUserId': ?1}, " +
+            "{'contactEmail': ?2}, " +
+            "{'reportedByEmail': ?2}" +
+            "]}")
+    Page<Emergency> findVisibleForOrganizationUser(String userId, String username, String email, Pageable pageable);
 
     Page<Emergency> findByStatus(Status status, Pageable pageable);
 

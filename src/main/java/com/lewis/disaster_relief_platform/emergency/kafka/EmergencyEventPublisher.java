@@ -13,16 +13,21 @@ import com.lewis.disaster_relief_platform.common.config.KafkaConfig;
 import com.lewis.disaster_relief_platform.emergency.model.Emergency;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
 public class EmergencyEventPublisher {
     private final KafkaTemplate<String, String> kafkaTemplate;
+    
+    @Value("${app.kafka.enabled:false}")
+    private boolean kafkaEnabled;
     
     public void publishEmergencyCreated(Emergency emergency) {
         String emergencyCreated = buildEventMessage("EMERGENCY_CREATED", emergency);
@@ -49,12 +54,17 @@ public class EmergencyEventPublisher {
 
 
     private void send(String key, String message) {
-        try {
-            kafkaTemplate.send(KafkaConfig.EMERGENCY_TOPIC, key, message);
-            log.info("Published event to Kafka: {}", message);
-        } catch (Exception exception) {
-            log.error("Failed to publish event to Kafka", exception);
+        if (!kafkaEnabled) {
+            log.debug("Kafka publishing is disabled; skipping event {}", message);
+            return;
         }
-
+        CompletableFuture.runAsync(() -> {
+            try {
+                kafkaTemplate.send(KafkaConfig.EMERGENCY_TOPIC, key, message);
+                log.info("Published event to Kafka: {}", message);
+            } catch (Exception exception) {
+                log.error("Failed to publish event to Kafka", exception);
+            }
+        });
     }
 }

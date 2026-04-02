@@ -16,7 +16,6 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-
 @Data
 @Builder
 @NoArgsConstructor
@@ -27,6 +26,7 @@ public class EmergencyResponse {
     private String title;
     private String description;
     private EmergencyType type;
+    private String disasterType;
     private Priority priority;
     private Status status;
     private Location location;
@@ -34,19 +34,22 @@ public class EmergencyResponse {
     private String contactPhone;
     private String contactEmail;
     private Integer affectedPeople;
-    private String createdByUserId;  // ← ADD THIS (null if public)
+    private String createdByUserId;
+    private String assignedVolunteerId;
+    private String assigneeName;
+    private String notes;
+    private LocalDateTime completedAt;
+    private String completedBy;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-
     // Factory Method to convert from Emergency entity
     public static EmergencyResponse fromEntity(Emergency emergency) {
-        return EmergencyResponse.builder().
-                id(emergency.getId()).
-                trackingCode(emergency.getTrackingCode())
+        return EmergencyResponse.builder().id(emergency.getId()).trackingCode(emergency.getTrackingCode())
                 .title(emergency.getTitle())
                 .description(emergency.getDescription())
                 .type(emergency.getType())
+                .disasterType(emergency.getDisasterType())
                 .priority(emergency.getPriority())
                 .status(emergency.getStatus())
                 .location(emergency.getLocation())
@@ -55,6 +58,11 @@ public class EmergencyResponse {
                 .contactEmail(emergency.getContactEmail())
                 .affectedPeople(emergency.getAffectedPeople())
                 .createdByUserId(emergency.getCreatedByUserId())
+                .assignedVolunteerId(emergency.getAssignedVolunteerId())
+                .assigneeName(emergency.getAssigneeName())
+                .notes(emergency.getNotes())
+                .completedAt(emergency.getCompletedAt())
+                .completedBy(emergency.getCompletedBy())
                 .createdAt(emergency.getCreatedAt())
                 .updatedAt(emergency.getUpdatedAt())
                 .build();

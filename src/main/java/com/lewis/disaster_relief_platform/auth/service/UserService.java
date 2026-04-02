@@ -8,8 +8,8 @@
 
 package com.lewis.disaster_relief_platform.auth.service;
 
-
 import com.lewis.disaster_relief_platform.auth.dto.response.UserResponse;
+import com.lewis.disaster_relief_platform.auth.model.Role;
 import com.lewis.disaster_relief_platform.auth.model.User;
 import com.lewis.disaster_relief_platform.auth.repository.UserRepository;
 import com.lewis.disaster_relief_platform.common.exception.domain.ResourceNotFoundException;
@@ -21,6 +21,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.Set;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -30,7 +33,8 @@ public class UserService {
 
     public UserResponse getCurrentUser() {
         String username = getCurrentUsername();
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new ResourceNotFoundException("User", "username", username));
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("User", "username", username));
         return UserResponse.fromEntity(user);
     }
 
@@ -42,6 +46,20 @@ public class UserService {
     public Page<UserResponse> getAllUsers(Pageable pageable) {
         Page<User> users = userRepository.findAll(pageable);
         return users.map(UserResponse::fromEntity);
+    }
+
+    public UserResponse updateUserRole(String userId, String roleName) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
+        Role role;
+        try {
+            role = Role.valueOf(roleName.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new RuntimeException("Invalid role: " + roleName);
+        }
+        user.setRole(Set.of(role));
+        user.setUpdatedAt(LocalDateTime.now());
+        return UserResponse.fromEntity(userRepository.save(user));
     }
 
     public void deleteUser(String id) {

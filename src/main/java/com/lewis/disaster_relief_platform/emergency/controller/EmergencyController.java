@@ -11,6 +11,7 @@ package com.lewis.disaster_relief_platform.emergency.controller;
 import com.lewis.disaster_relief_platform.common.dto.ApiResponse;
 import com.lewis.disaster_relief_platform.common.dto.PageResponse;
 import com.lewis.disaster_relief_platform.emergency.dto.request.EmergencyRequest;
+import com.lewis.disaster_relief_platform.emergency.dto.request.EmergencyUpdateRequest;
 import com.lewis.disaster_relief_platform.emergency.dto.response.EmergencyResponse;
 import com.lewis.disaster_relief_platform.emergency.dto.response.EmergencyTrackingResponse;
 import com.lewis.disaster_relief_platform.emergency.model.Status;
@@ -38,7 +39,7 @@ import java.util.Map;
 @RequestMapping("/api/v1/emergencies")
 @RequiredArgsConstructor
 @Slf4j
-@Tag(name="Emergency APIs", description = "All APIs related to Emergency: creation, updation, deletion and many more")
+@Tag(name = "Emergency APIs", description = "All APIs related to Emergency: creation, updation, deletion and many more")
 public class EmergencyController {
     private final EmergencyService emergencyService;
     private final EmergencyRepository emergencyRepository;
@@ -56,8 +57,7 @@ public class EmergencyController {
         // Add tracking code to success message
         String message = String.format(
                 "Emergency created successfully. Your tracking code is: %s. Save this code to check your request status.",
-                response.getTrackingCode()
-        );
+                response.getTrackingCode());
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(ApiResponse.success(response, message));
@@ -93,7 +93,10 @@ public class EmergencyController {
     @GetMapping
     @PreAuthorize("hasRole('ADMIN') or hasRole('COORDINATOR')")
     @Operation(summary = "Get all emergencies", description = "Fetches a paginated list of all emergencies with support for sorting by fields like 'affectedPeople' or 'createdAt'.")
-    public ResponseEntity<ApiResponse<PageResponse<EmergencyResponse>>> getAllEmergencies(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "affectedPeople") String sortBy, @RequestParam(defaultValue = "DESC") String sortDirection) {
+    public ResponseEntity<ApiResponse<PageResponse<EmergencyResponse>>> getAllEmergencies(
+            @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "affectedPeople") String sortBy,
+            @RequestParam(defaultValue = "DESC") String sortDirection) {
         log.info("Fetching emergencies - page: {}, size: {}, sortBy: {}", page, size, sortBy);
         Sort.Direction direction = sortDirection.equalsIgnoreCase("ASC") ? Sort.Direction.ASC : Sort.Direction.DESC;
         log.info("DIrection:: {}", direction);
@@ -102,13 +105,26 @@ public class EmergencyController {
         return ResponseEntity.ok(ApiResponse.success(PageResponse.of(emergencies)));
     }
 
+    @GetMapping("/visible")
+    @PreAuthorize("isAuthenticated()")
+    @Operation(summary = "Get emergencies visible to the current user", description = "Admins and coordinators see all emergencies, volunteers see assigned requests, and organization users see requests they submitted.")
+    public ResponseEntity<ApiResponse<PageResponse<EmergencyResponse>>> getVisibleEmergencies(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "50") int size,
+            @RequestParam(defaultValue = "createdAt") String sortBy,
+            @RequestParam(defaultValue = "DESC") String sortDirection) {
+        Sort.Direction direction = sortDirection.equalsIgnoreCase("ASC") ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
+        Page<EmergencyResponse> emergencies = emergencyService.getVisibleEmergencies(pageable);
+        return ResponseEntity.ok(ApiResponse.success(PageResponse.of(emergencies)));
+    }
 
     /*
-     * Get Emergency  By Id.
+     * Get Emergency By Id.
      * GET /api/v1/emergencies/{id}
      */
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('COORDINATOR')")
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Get emergency by ID", description = "Retrieves the detailed information of a specific emergency using its unique identifier.")
     public ResponseEntity<ApiResponse<EmergencyResponse>> getEmergencyById(@PathVariable String id) {
         log.info("Fetching emergency with id: {}", id);
@@ -116,15 +132,30 @@ public class EmergencyController {
         return ResponseEntity.ok(ApiResponse.success(emergencyById));
     }
 
+    /**
+     * Update Emergency (assign, change status, add notes)
+     * PUT /api/v1/emergencies/{id}
+     */
+    @PutMapping("/{id}")
+    @PreAuthorize("isAuthenticated()")
+    @Operation(summary = "Update emergency", description = "Updates an emergency record — assignee, status, notes, etc.")
+    public ResponseEntity<ApiResponse<EmergencyResponse>> updateEmergency(
+            @PathVariable String id,
+            @RequestBody EmergencyUpdateRequest request) {
+        log.info("Updating emergency {} with: {}", id, request);
+        EmergencyResponse response = emergencyService.updateEmergency(id, request);
+        return ResponseEntity.ok(ApiResponse.success(response, "Emergency updated successfully"));
+    }
 
     /**
      * Update Emergency Status
      * PATCH /api/v1/emergencies/{id}/status
      */
     @PatchMapping("/{id}/status")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('COORDINATOR')")
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Update emergency status", description = "Updates the current status (e.g., PENDING, IN_PROGRESS, RESOLVED) of a specific emergency.")
-    public ResponseEntity<ApiResponse<EmergencyResponse>> updateEmergencyStatus(@PathVariable String id, @RequestParam Status status) {
+    public ResponseEntity<ApiResponse<EmergencyResponse>> updateEmergencyStatus(@PathVariable String id,
+            @RequestParam Status status) {
         log.info("Updating emergency {} status to {}", id, status);
         EmergencyResponse response = emergencyService.updateEmergencyStatus(id, status);
         return ResponseEntity.ok(ApiResponse.success(response, "Emergency Status updated successfully. "));
@@ -136,7 +167,8 @@ public class EmergencyController {
      */
     @PatchMapping("/{emergencyId}/{volunteerId}")
     @Operation(summary = "Assign volunteer to emergency", description = "Links a specific volunteer to an emergency record to begin the relief process.")
-    public ResponseEntity<ApiResponse<EmergencyResponse>> assignVolunteer(@PathVariable String emergencyId, @PathVariable String volunteerId) {
+    public ResponseEntity<ApiResponse<EmergencyResponse>> assignVolunteer(@PathVariable String emergencyId,
+            @PathVariable String volunteerId) {
         EmergencyResponse assignedVolunteer = emergencyService.assignVolunteer(emergencyId, volunteerId);
         return ResponseEntity.ok(ApiResponse.success(assignedVolunteer, "Volunteer assigned successfully"));
     }
@@ -148,11 +180,10 @@ public class EmergencyController {
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Delete emergency", description = "Permanently removes an emergency record from the system using its ID.")
-    public ResponseEntity<ApiResponse<Void>> deleteEmergency(@PathVariable String id){
+    public ResponseEntity<ApiResponse<Void>> deleteEmergency(@PathVariable String id) {
         emergencyService.deleteEmergency(id);
         return ResponseEntity.ok(ApiResponse.success(null, "Emergency deleted successfully"));
     }
-
 
     /**
      * Get Emergency Statistics
@@ -161,9 +192,9 @@ public class EmergencyController {
     @GetMapping("/stats")
     @PreAuthorize("hasRole('ADMIN') or hasRole('COORDINATOR')")
     @Operation(summary = "Get emergency statistics", description = "Retrieves a count of emergencies grouped by their current status (Total, Pending, Resolved, etc.).")
-    public ResponseEntity<ApiResponse<Map<String, Long>>> getStatistics(){
+    public ResponseEntity<ApiResponse<Map<String, Long>>> getStatistics() {
         log.info("Fetching emergency statistics");
-        Map<String, Long> stats  = new HashMap<>();
+        Map<String, Long> stats = new HashMap<>();
         stats.put("total", emergencyService.getTotalEmergencies());
         stats.put("pending", emergencyService.getPendingEmergenciesCount());
         stats.put("resolved", emergencyService.getEmergenciesByStatus(Status.RESOLVED));

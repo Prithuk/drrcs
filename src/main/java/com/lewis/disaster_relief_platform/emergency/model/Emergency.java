@@ -8,7 +8,6 @@
 
 package com.lewis.disaster_relief_platform.emergency.model;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -33,7 +32,7 @@ public class Emergency {
     private String id;
 
     @Indexed(unique = true)
-    private String trackingCode;  // ← NEW: e.g., "DIS-2024-A7B3C8F1"
+    private String trackingCode;
 
     @Indexed
     private String title;
@@ -42,6 +41,8 @@ public class Emergency {
 
     @Indexed
     private EmergencyType type;
+
+    private String disasterType;
 
     @Indexed
     private Priority priority;
@@ -54,7 +55,7 @@ public class Emergency {
     private String reportedBy;
 
     @Indexed
-    private String reportedByEmail;  // ← NEW: For linking to user accounts
+    private String reportedByEmail;
 
     private String contactPhone;
 
@@ -65,9 +66,17 @@ public class Emergency {
     private List<String> requiredResources;
 
     @Indexed
-    private String createdByUserId;  // ← NEW: NULL if public, User ID if logged in
+    private String createdByUserId;
 
     private String assignedVolunteerId;
+
+    private String assigneeName;
+
+    private String notes;
+
+    private LocalDateTime completedAt;
+
+    private String completedBy;
 
     @CreatedDate
     private LocalDateTime createdAt;

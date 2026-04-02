@@ -8,7 +8,6 @@
 
 package com.lewis.disaster_relief_platform.auth.config.websecurity;
 
-
 import com.lewis.disaster_relief_platform.auth.config.constant.SecurityConstant;
 import com.lewis.disaster_relief_platform.auth.config.filter.JwtAccessDeniedHandler;
 import com.lewis.disaster_relief_platform.auth.config.filter.JwtAuthenticationEntryPoint;
@@ -29,17 +28,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
-
-
-import java.util.Arrays;
-import java.util.Collections;
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true,proxyTargetClass = true)
+@EnableGlobalMethodSecurity(prePostEnabled = true, proxyTargetClass = true)
 public class WebSecurityConfig {
     private JwtAccessDeniedHandler jwtAccessDeniedHandler;
     private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
@@ -47,18 +39,21 @@ public class WebSecurityConfig {
     private UserDetailsService userDetailsService;
 
     @Autowired
-    public WebSecurityConfig(JwtAccessDeniedHandler jwtAccessDeniedHandler, JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint, JwtAuthorizationFilter jwtAuthorizationFilter,  UserDetailsService userDetailsService) {
+    public WebSecurityConfig(JwtAccessDeniedHandler jwtAccessDeniedHandler,
+            JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint, JwtAuthorizationFilter jwtAuthorizationFilter,
+            UserDetailsService userDetailsService) {
         this.jwtAccessDeniedHandler = jwtAccessDeniedHandler;
         this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
         this.jwtAuthorizationFilter = jwtAuthorizationFilter;
         this.userDetailsService = userDetailsService;
 
     }
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http.
-                // disable csrf and enable cors
+        // disable csrf and enable cors
                 csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
 
@@ -69,39 +64,21 @@ public class WebSecurityConfig {
 
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(SecurityConstant.PUBLIC_URLS).permitAll()
-                        .anyRequest().authenticated()
-                )
+                        .anyRequest().authenticated())
                 .exceptionHandling(exception -> exception.accessDeniedHandler(jwtAccessDeniedHandler)
-                        .authenticationEntryPoint(jwtAuthenticationEntryPoint)
-                )
+                        .authenticationEntryPoint(jwtAuthenticationEntryPoint))
                 .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
-                return http.build();
+        return http.build();
     }
 
     @Bean
-    public CorsFilter corsFilter() {
-        UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource = new UrlBasedCorsConfigurationSource();
-        CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.setAllowCredentials(false);
-        corsConfiguration.setAllowedOrigins(Collections.singletonList("*"));
-        corsConfiguration.setAllowedHeaders(Arrays.asList("Origin", "Access-Control-Allow-Origin", "Content-Type",
-                "Accept", "JwtToken", "Authorization", "Origin, Accept", "X-Requested-With",
-                "Access-Control-Request-Method", "Access-Control-Request-Headers"));
-        corsConfiguration.setExposedHeaders(Arrays.asList("Origin", "Content-Type", "Accept", "JwtToken", "Authorization",
-                "Access-Control-Allow-Origin", "Access-Control-Allow-Origin", "Access-Control-Allow-Credentials"));
-        corsConfiguration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        urlBasedCorsConfigurationSource.registerCorsConfiguration("/**", corsConfiguration);
-        return new CorsFilter(urlBasedCorsConfigurationSource);
-
-    }
-
-    @Bean
-    public PasswordEncoder passwordEncoder(){
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
+            throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
 }

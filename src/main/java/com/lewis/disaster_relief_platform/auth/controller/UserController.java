@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserService userService;
+
     /**
      * Get current user profile
      * GET /api/v1/auth/me
@@ -62,14 +63,23 @@ public class UserController {
         Page<UserResponse> users = userService.getAllUsers(pageable);
 
         return ResponseEntity.ok(
-                ApiResponse.success(PageResponse.of(users))
-        );
+                ApiResponse.success(PageResponse.of(users)));
     }
 
     /**
      * Get user by ID (ADMIN only)
      * GET /api/v1/auth/users/{id}
      */
+    @PatchMapping("/users/{id}/role")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ApiResponse<UserResponse>> updateUserRole(
+            @PathVariable String id,
+            @RequestParam String role) {
+        log.info("Updating role for user {} to {}", id, role);
+        UserResponse updated = userService.updateUserRole(id, role);
+        return ResponseEntity.ok(ApiResponse.success(updated, "Role updated successfully"));
+    }
+
     @GetMapping("/users/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<UserResponse>> getUserById(@PathVariable String id) {

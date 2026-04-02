@@ -11,7 +11,6 @@ package com.lewis.disaster_relief_platform.auth.service;
 import com.lewis.disaster_relief_platform.auth.model.User;
 import com.lewis.disaster_relief_platform.auth.model.UserPrinciple;
 import com.lewis.disaster_relief_platform.auth.repository.UserRepository;
-import com.lewis.disaster_relief_platform.common.exception.domain.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -26,8 +25,10 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new ResourceNotFoundException("User not found:" + username));
-        UserPrinciple userPrinciple = new UserPrinciple(user);
-        return userPrinciple;
+        // Try username first, then fall back to email so users can log in with either
+        User user = userRepository.findByUsername(username)
+                .or(() -> userRepository.findByEmail(username))
+                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
+        return new UserPrinciple(user);
     }
 }
