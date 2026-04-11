@@ -9,15 +9,11 @@
 package com.lewis.disaster_relief_platform.auth.config.integration;
 
 import com.lewis.disaster_relief_platform.auth.config.constant.SecurityConstant;
-import com.lewis.disaster_relief_platform.auth.config.token.JWTUtil;
-import com.lewis.disaster_relief_platform.auth.model.UserPrinciple;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Component;
-
-import static com.lewis.disaster_relief_platform.auth.config.constant.SecurityConstant.JWT_TOKEN_HEADER;
 
 @Component
 @RequiredArgsConstructor

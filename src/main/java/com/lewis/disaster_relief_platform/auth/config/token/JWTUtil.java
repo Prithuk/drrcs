@@ -52,7 +52,6 @@ public class JWTUtil {
                 .withArrayClaim(SecurityConstant.AUTHORITIES, claims)
                 .withExpiresAt(new Date(System.currentTimeMillis() + SecurityConstant.EXPIRATION_TIME))
                  .sign(Algorithm.HMAC512(secret));
-
     }
 
     private String[] getClaimsFromUser(UserPrinciple user) {
@@ -61,7 +60,6 @@ public class JWTUtil {
                 .map(GrantedAuthority::getAuthority).toArray(String[]::new);
     }
 
-
     public List<GrantedAuthority> getAuthorities(String token) {
         String[] claims = getClaimsFromToken(token);
         return stream(claims)
@@ -69,12 +67,10 @@ public class JWTUtil {
                 .collect(Collectors.toList());
     }
 
-
     private String[] getClaimsFromToken(String token) {
         JWTVerifier verifier = getJWTVerifier();
         return verifier.verify(token).getClaim(SecurityConstant.AUTHORITIES).asArray(String.class);
     }
-
 
     private JWTVerifier getJWTVerifier() {
         try {
@@ -85,7 +81,6 @@ public class JWTUtil {
             throw new JWTVerificationException(SecurityConstant.TOKEN_CANNOT_BE_VERIFIED);
         }
     }
-
 
     public Authentication getAuthentication(String username, List<GrantedAuthority> authorities, HttpServletRequest request) {
         UsernamePasswordAuthenticationToken userPasswordAuthToken = new UsernamePasswordAuthenticationToken(username, null, authorities);

@@ -53,8 +53,6 @@ public class AuthController {
      */
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<AuthResponse>> login(@Valid @RequestBody LoginRequest request) {
-        log.info("Login request for username: {}", request.getUsername());
-        log.info("Login request for username: {}", request.getPassword());
         // 1. Authenticate (Checks password using AuthenticationManager)
         integrationService.authenticate(request.getUsername(), request.getPassword());
         // 2. Get the Response Data from Service

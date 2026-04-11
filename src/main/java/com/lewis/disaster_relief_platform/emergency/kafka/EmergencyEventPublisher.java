@@ -9,7 +9,10 @@
 package com.lewis.disaster_relief_platform.emergency.kafka;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lewis.disaster_relief_platform.common.config.KafkaConfig;
+import com.lewis.disaster_relief_platform.emergency.kafka.dto.TrackingCodeNotificationEvent;
 import com.lewis.disaster_relief_platform.emergency.model.Emergency;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +26,7 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class EmergencyEventPublisher {
     private final KafkaTemplate<String, String> kafkaTemplate;
+    private final ObjectMapper objectMapper;
     
     public void publishEmergencyCreated(Emergency emergency) {
         String emergencyCreated = buildEventMessage("EMERGENCY_CREATED", emergency);
@@ -56,5 +60,26 @@ public class EmergencyEventPublisher {
             log.error("Failed to publish event to Kafka", exception);
         }
 
+    }
+
+
+    public void publishTrackingCodeEmail(Emergency emergency) {
+        if (emergency.getContactEmail() == null || emergency.getContactEmail().isBlank()) {
+            log.debug("No contact email; skipping tracking notification topic");
+            return;
+        }
+        TrackingCodeNotificationEvent event = TrackingCodeNotificationEvent.of(
+                emergency.getContactEmail().trim(),
+                emergency.getTrackingCode(),
+                emergency.getTitle(),
+                emergency.getId()
+        );
+        try {
+            String json = objectMapper.writeValueAsString(event);
+            kafkaTemplate.send(KafkaConfig.NOTIFICATION_TOPIC, emergency.getId(), json);
+            log.info("Published tracking notification to Kafka topic {}", KafkaConfig.NOTIFICATION_TOPIC);
+        } catch (JsonProcessingException e) {
+            log.error("Failed to serialize tracking notification", e);
+        }
     }
 }

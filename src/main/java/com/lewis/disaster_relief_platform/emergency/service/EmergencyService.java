@@ -21,6 +21,9 @@ import com.lewis.disaster_relief_platform.emergency.model.Status;
 import com.lewis.disaster_relief_platform.emergency.repository.EmergencyRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
@@ -42,6 +45,7 @@ public class EmergencyService {
 
 
     @Transactional
+    @CacheEvict(value = {"emergencies", "stats"}, allEntries = true)
     public EmergencyResponse CreateEmergency(EmergencyRequest request) {
         log.info("Creating new emergency: {}", request.getTitle());
         validateEmergencyRequest(request);
@@ -59,16 +63,13 @@ public class EmergencyService {
 
         log.info("FROM SERVICE: ", emergency);
         Emergency savedEmergency = emergencyRepository.save(emergency);
-
-        // TODO: Send tracking code via email
-        // emailService.sendTrackingCode(request.getContactEmail(), trackingCode);
-
         emergencyEventPublisher.publishEmergencyCreated(savedEmergency);
+        emergencyEventPublisher.publishTrackingCodeEmail(savedEmergency);
         log.info("Emergency saved with ID: {}", savedEmergency.getId());
         return EmergencyResponse.fromEntity(savedEmergency);
     }
 
-
+    @Cacheable(value = "tracking", key = "#trackingCode", unless = "#result == null")
     public EmergencyTrackingResponse trackByCode(String trackingCode) {
         log.info("Tracking emergency with code: {}", trackingCode);
 
@@ -135,7 +136,7 @@ public class EmergencyService {
         return emergencies.map(emergency -> EmergencyResponse.fromEntity(emergency));
     }
 
-
+    @Cacheable(value = "emergencies", key = "#id", unless = "#result == null")
     public EmergencyResponse getEmergencyById(String id) {
         Emergency emergency = emergencyRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Emergency", "id", id));
         return EmergencyResponse.fromEntity(emergency);
@@ -143,6 +144,10 @@ public class EmergencyService {
 
 
     @Transactional
+    @Caching(evict = {
+            @CacheEvict(value = "emergencies", key = "#id"),
+            @CacheEvict(value = "stats", allEntries = true)
+    })
     public EmergencyResponse updateEmergencyStatus(String id, Status newStatus) {
         Emergency emergency = emergencyRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Emergency", "id", id));
         // business validation
@@ -191,6 +196,7 @@ public class EmergencyService {
 
 
     //statistics method
+    @Cacheable(value = "stats", key = "'total'")
     public long getTotalEmergencies() {
         return emergencyRepository.count();
     }
@@ -228,7 +234,7 @@ public class EmergencyService {
     }
 
     private String generateTrackingCode() {
-        String prefix = "Prithu-" + LocalDate.now().getYear() + "-";
+        String prefix = "DISASTER-" + LocalDate.now().getYear() + "-";
         String randomPart = UUID.randomUUID().toString().replace("-", "").substring(0, 8).toUpperCase();
         return prefix + randomPart;
     }
