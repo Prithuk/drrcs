@@ -31,7 +31,8 @@ public class SecurityConstant {
             "/swagger-ui.html",
             "/swagger-ui/**",
             "/api/v1/auth/**",
-            "/api/v1/emergencies/public/**"
+            "/api/v1/emergencies/public/**",
+            "/api/v1/volunteers/register"
     };
 }
 
