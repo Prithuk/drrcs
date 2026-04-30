@@ -55,6 +55,10 @@ public class UserService {
     // Helper method to get current authenticated username
     private String getCurrentUsername() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()
+                || "anonymousUser".equals(authentication.getPrincipal())) {
+            throw new ResourceNotFoundException("No user found");
+        }
         return authentication.getName();
     }
 }

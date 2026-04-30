@@ -19,6 +19,10 @@ import com.lewis.disaster_relief_platform.emergency.model.Emergency;
 import com.lewis.disaster_relief_platform.emergency.model.Location;
 import com.lewis.disaster_relief_platform.emergency.model.Status;
 import com.lewis.disaster_relief_platform.emergency.repository.EmergencyRepository;
+import com.lewis.disaster_relief_platform.volunteer.model.AvailabilityStatus;
+import com.lewis.disaster_relief_platform.volunteer.model.Volunteer;
+import com.lewis.disaster_relief_platform.volunteer.repository.VolunteerRepository;
+import com.lewis.disaster_relief_platform.volunteer.service.VolunteerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
@@ -42,6 +46,8 @@ import java.util.UUID;
 public class EmergencyService {
     private final EmergencyRepository emergencyRepository;
     private final EmergencyEventPublisher emergencyEventPublisher;
+    private final VolunteerRepository volunteerRepository;
+    private final VolunteerService volunteerService;
 
 
     @Transactional
@@ -69,7 +75,7 @@ public class EmergencyService {
         return EmergencyResponse.fromEntity(savedEmergency);
     }
 
-    @Cacheable(value = "tracking", key = "#trackingCode", unless = "#result == null")
+//    @Cacheable(value = "tracking", key = "#trackingCode", unless = "#result == null")
     public EmergencyTrackingResponse trackByCode(String trackingCode) {
         log.info("Tracking emergency with code: {}", trackingCode);
 
@@ -166,16 +172,22 @@ public class EmergencyService {
     @Transactional
     public EmergencyResponse assignVolunteer(String emergencyId, String volunteerId) {
         log.info("Assigning volunteer {} to emergency {}", volunteerId, emergencyId);
-
-        Emergency emergency = emergencyRepository.findById(emergencyId).orElseThrow(() -> new ResourceNotFoundException("Emergency", "id", emergencyId));
+        Emergency emergency = emergencyRepository.findById(emergencyId)
+                .orElseThrow(() -> new ResourceNotFoundException("Emergency", "id", emergencyId));
         if (emergency.getStatus() != Status.PENDING) {
             throw new BusinessException("Emergency must be in PENDING status to assign volunteers");
         }
-
+        Volunteer volunteer = volunteerRepository.findById(volunteerId)
+                .orElseThrow(() -> new ResourceNotFoundException("Volunteer", "id", volunteerId));
+        if (volunteer.getAvailabilityStatus() != AvailabilityStatus.AVAILABLE) {
+            throw new BusinessException("Volunteer is not available for assignment");
+        }
         emergency.setAssignedVolunteerId(volunteerId);
         emergency.setStatus(Status.ASSIGNED);
         emergency.setUpdatedAt(LocalDateTime.now());
         Emergency updated = emergencyRepository.save(emergency);
+        // keep volunteer state in sync
+        volunteerService.incrementActiveAssignments(volunteerId);
         emergencyEventPublisher.publishVolunteerAssigned(updated, volunteerId);
         return EmergencyResponse.fromEntity(updated);
     }

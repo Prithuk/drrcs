@@ -15,7 +15,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.FieldError;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -39,6 +42,27 @@ public class GlobalExceptionHandler {
                 .error("Not Found").timestamp(LocalDateTime.now())
                 .path(request.getDescription(false)
                         .replace("uri=", "")).build();
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+    }
+
+
+    @ExceptionHandler({UsernameNotFoundException.class, InternalAuthenticationServiceException.class})
+    public ResponseEntity<ErrorResponse> handleUsernameNotFound(
+            Exception ex, WebRequest request) {
+
+        String message = ex.getMessage();
+        if (message == null || message.isBlank()) {
+            message = "No user found";
+        }
+
+        ErrorResponse error = ErrorResponse.builder()
+                .message(message)
+                .status(HttpStatus.NOT_FOUND.value()) // or UNAUTHORIZED if you prefer
+                .error("Not Found")
+                .timestamp(LocalDateTime.now())
+                .path(request.getDescription(false).replace("uri=", ""))
+                .build();
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
@@ -182,6 +206,24 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).body(error);
     }
 
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public ResponseEntity<ErrorResponse> handleMethodNotAllowed(
+            HttpRequestMethodNotSupportedException ex, WebRequest request) {
+
+        String supported = ex.getSupportedHttpMethods() != null
+                ? ex.getSupportedHttpMethods().toString()
+                : "unknown";
+
+        ErrorResponse error = ErrorResponse.builder()
+                .message("HTTP method not allowed for this endpoint. Supported: " + supported)
+                .status(HttpStatus.METHOD_NOT_ALLOWED.value()) // 405
+                .error("Method Not Allowed")
+                .timestamp(LocalDateTime.now())
+                .path(request.getDescription(false).replace("uri=", ""))
+                .build();
+
+        return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(error);
+    }
 
 
 }

@@ -16,6 +16,8 @@ import com.lewis.disaster_relief_platform.emergency.dto.response.EmergencyTracki
 import com.lewis.disaster_relief_platform.emergency.model.Status;
 import com.lewis.disaster_relief_platform.emergency.repository.EmergencyRepository;
 import com.lewis.disaster_relief_platform.emergency.service.EmergencyService;
+import com.lewis.disaster_relief_platform.volunteer.repository.VolunteerRepository;
+import com.lewis.disaster_relief_platform.volunteer.service.VolunteerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -42,6 +44,9 @@ import java.util.Map;
 public class EmergencyController {
     private final EmergencyService emergencyService;
     private final EmergencyRepository emergencyRepository;
+
+    private final VolunteerRepository volunteerRepository;
+    private final VolunteerService volunteerService;
 
     /**
      * Create a new Emergency
@@ -134,9 +139,12 @@ public class EmergencyController {
      * Assign volunteer to emergency
      * PATCH /api/v1/emergencies/{id}/assign
      */
-    @PatchMapping("/{emergencyId}/{volunteerId}")
+    @PatchMapping("/{emergencyId}/assign/{volunteerId}")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('COORDINATOR')")
     @Operation(summary = "Assign volunteer to emergency", description = "Links a specific volunteer to an emergency record to begin the relief process.")
-    public ResponseEntity<ApiResponse<EmergencyResponse>> assignVolunteer(@PathVariable String emergencyId, @PathVariable String volunteerId) {
+    public ResponseEntity<ApiResponse<EmergencyResponse>> assignVolunteer(
+            @PathVariable String emergencyId,
+            @PathVariable String volunteerId) {
         EmergencyResponse assignedVolunteer = emergencyService.assignVolunteer(emergencyId, volunteerId);
         return ResponseEntity.ok(ApiResponse.success(assignedVolunteer, "Volunteer assigned successfully"));
     }
