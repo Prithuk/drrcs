@@ -1,0 +1,67 @@
+spring:
+  application:
+    name: disaster-relief-platform
+
+  data:
+    mongodb:
+      uri: ${MONGODB_URI}  # Will be set via environment variable
+
+    redis:
+      host: localhost
+      port: 6379
+      password: redis123
+      timeout: 2000ms
+      lettuce:
+        pool:
+          max-active: 8
+          max-idle: 8
+          min-idle: 0
+          max-wait: -1ms
+
+  cache:
+    type: redis
+    redis:
+      time-to-live: 600000
+      cache-null-values: false
+
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: disaster-relief-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+
+server:
+  port: 8080
+
+jwt:
+  secret: ${JWT_SECRET}  # Will be set via environment variable
+  expiration: 86400000
+
+rate-limit:
+  enabled: true
+  emergency-creation:
+    capacity: 5
+    refill-tokens: 5
+    refill-duration-minutes: 1
+  emergency-tracking:
+    capacity: 20
+    refill-tokens: 20
+    refill-duration-minutes: 1
+  authenticated:
+    capacity: 100
+    refill-tokens: 100
+    refill-duration-minutes: 1
+
+logging:
+  level:
+    com.relief: INFO
+    org.springframework: WARN
+  file:
+    name: /home/ec2-user/logs/application.log
+    max-size: 10MB
+    max-history: 30
