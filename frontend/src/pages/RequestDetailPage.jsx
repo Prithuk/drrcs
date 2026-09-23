@@ -9,7 +9,7 @@ import {
 } from '../lib/permissions';
 import { useAuth } from '../hooks/useAuth';
 import { getAllUsers } from '../services/userService';
-import { createRequestAssignedNotification, createRequestCompletedNotification } from '../services/notificationService';
+import { refreshNotificationsFromServer } from '../services/notificationService';
 import './RequestDetailPage.css';
 
 const REQUEST_FORM_PAYLOADS_KEY = 'drrcs_request_form_payloads';
@@ -151,7 +151,7 @@ const RequestDetailPage = () => {
         status: updated.status || 'assigned',
         backendStatus: updated.backendStatus || 'assigned',
       }));
-      createRequestAssignedNotification(updated, assignee);
+      await refreshNotificationsFromServer(user);
     } catch (error) {
       setActionError(error?.message || 'Failed to assign the request. Please try again.');
     } finally {
@@ -205,7 +205,7 @@ const RequestDetailPage = () => {
         status: updated.status || 'assigned',
         backendStatus: updated.backendStatus || 'assigned',
       }));
-      createRequestAssignedNotification(updated, selfCandidate);
+      await refreshNotificationsFromServer(user);
     } catch (error) {
       setActionError(error?.message || 'Failed to assign this request to yourself. Please try again.');
     } finally {
@@ -289,7 +289,7 @@ const RequestDetailPage = () => {
         completedBy: user?.fullName || request.assigneeName || 'Response Team',
       });
       setRequest(updated);
-      createRequestCompletedNotification(updated, updated.completedBy || 'Response Team');
+      await refreshNotificationsFromServer(user);
     } catch (error) {
       setActionError(error?.message || 'Failed to complete this task. Please try again.');
     } finally {
@@ -299,7 +299,7 @@ const RequestDetailPage = () => {
 
   return (
     <div className="request-detail-page">
-      <div className="request-detail-header">
+      <div className="request-detail-header" data-animate="fade-up">
         <div>
           <h1>Request Details</h1>
           <p>Complete submitted request information</p>
@@ -308,7 +308,7 @@ const RequestDetailPage = () => {
       </div>
 
       <div className="request-detail-grid">
-        <section className="request-detail-card">
+        <section className="request-detail-card" data-animate="fade-right">
           <h2>Request Summary</h2>
           <dl className="request-detail-list">
             <div><dt>Tracking ID</dt><dd>{request.trackingCode || request.id}</dd></div>

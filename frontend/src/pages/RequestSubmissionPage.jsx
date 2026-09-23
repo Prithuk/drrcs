@@ -5,7 +5,6 @@
 
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Phone, Mail, Shield } from 'lucide-react';
 import RequestForm from '../components/requests/RequestForm';
 import { Card } from '../components/common/Card';
 import PublicSiteHeader from '../components/layout/PublicSiteHeader';
@@ -43,7 +42,7 @@ const RequestSubmissionPage = ({ onNavigate }) => {
       <main>
         {successMessage ? (
           <div className="request-submission-page success">
-            <div className="success-container">
+            <div className="success-container" data-animate="zoom-in">
               <div className="success-icon">✓</div>
               <h2>Request Submitted Successfully!</h2>
               <p>Thank you for submitting your emergency request.</p>
@@ -82,20 +81,20 @@ const RequestSubmissionPage = ({ onNavigate }) => {
           </div>
         ) : (
           <div className="request-submission-page">
-            <div className="page-header">
+            <div className="page-header" data-animate="fade-up">
               <h1>Submit Emergency Request</h1>
-              <p>Please provide detailed information about your organization's relief needs.</p>
+              <p>Please provide detailed information about your organization&apos;s relief needs.</p>
             </div>
 
             <div className="page-content">
-              <div className="form-container">
+              <div className="form-container" data-animate="fade-right">
                 <RequestForm
                   onSuccess={handleFormSuccess}
                   onCancel={handleFormCancel}
                 />
               </div>
 
-              <aside className="help-panel">
+              <aside className="help-panel" data-animate="fade-left" data-delay="150">
                 <Card>
                   <Card.Header>
                     <h3>Submission Guidance</h3>
